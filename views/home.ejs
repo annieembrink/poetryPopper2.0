@@ -1,0 +1,31 @@
+<html lang="en">
+  <head>
+      <%- include('partials/header') %> 
+  </head>
+  <body>
+    <%- include('partials/nav') %>
+    <%- include('partials/serverMessage') %>
+    <main>
+    <h1>Home</h1>
+    <p>
+      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat tempora
+      voluptate id qui. Expedita suscipit, perferendis illum quos inventore esse
+      a! Cupiditate autem perferendis neque sint fugit est molestiae tempora.
+    </p>
+
+    <div>
+        <h2>Public Poems</h2>
+        <ul>
+          <% for(let i = 0; i < poems.length; i++) { %>
+          <li>
+            <span><%= poems[i].name %></span>
+            <b><%= poems[i].poem %></b>
+            <small>by, <%= poems[i].postedBy?.username %></small>
+          </li>
+          <% } %>
+        </ul>
+    </div>
+
+  </main>
+  </body>
+</html>

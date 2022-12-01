@@ -1,0 +1,8 @@
+<nav> 
+    <% if (isAuth) { %>
+        <button><a href="/logout">Logout</a></button>
+    <% } else { %> 
+        <button><a href="/login">Login</a></button>
+        <button><a href="/register">Register</a></button>
+    <% } %> 
+</nav>

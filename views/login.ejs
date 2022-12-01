@@ -1,0 +1,24 @@
+<html lang="en">
+  <head>
+    <%- include('partials/header') %> 
+  </head>
+  <body>
+    <%- include('partials/nav') %>
+    <%- include('partials/serverMessage') %>
+    <main>
+    <h1>Login</h1>
+    <p>
+      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat tempora
+      voluptate id qui. Expedita suscipit, perferendis illum quos inventore esse
+      a! Cupiditate autem perferendis neque sint fugit est molestiae tempora.
+    </p>
+
+    <form action="/login" method="POST">
+      <input type="text" placeholder="username" name="username" />
+      <input type="text" placeholder="password" name="password" />
+      <button type="submit">Submit</button>
+    </form>
+
+  </main>
+  </body>
+</html>

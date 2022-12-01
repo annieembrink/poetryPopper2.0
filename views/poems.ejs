@@ -1,0 +1,140 @@
+<html lang="en">
+  <head>
+    <%- include('partials/header') %>
+  </head>
+  <body>
+    <%- include('partials/nav') %>
+    <%- include('partials/serverMessage') %>
+    <main>
+      <h2>Public Quotes</h2>
+      <ul>
+        <% for(let i = 0; i < quotes.length; i++) { %>
+        <li>
+          <span><%= quotes[i].name %></span>
+          <b><%= quotes[i].quote %></b>
+          <small>by, <%= quotes[i].postedBy?.username %></small>
+          <button
+            onclick="handleEdit('<%= quotes[i]._id %>', '<%= quotes[i].name %>', '<%= quotes[i].quote %>')"
+          >
+            edit
+          </button>
+          <button onclick="handleDelete('<%= quotes[i]._id %>')">delete</button>
+        </li>
+        <% } %>
+      </ul>
+
+      <h2>Your private Quotes</h2>
+      <ul>
+        <% for(let i = 0; i < privateQuotes.length; i++) { %>
+        <li>
+          <span><%= privateQuotes[i].name %></span>
+          <b><%= privateQuotes[i].quote %></b>
+          <small>, by you</small>
+          <button
+            onclick="handleEdit('<%= privateQuotes[i]._id %>', '<%= privateQuotes[i].name %>', '<%= privateQuotes[i].quote %>')"
+          >
+            edit
+          </button>
+          <button onclick="handleDelete('<%= privateQuotes[i]._id %>')">
+            delete
+          </button>
+        </li>
+        <% } %>
+      </ul>
+
+      <form id="addForm" action="/quotes" method="POST">
+        <h2>Add quote</h2>
+        <input type="text" placeholder="name" name="name" />
+        <input type="text" placeholder="quote" name="quote" />
+        <fieldset>
+          <legend>Select visibility</legend>
+          <label for="public">Public</label>
+          <input
+            type="radio"
+            name="visibility"
+            id="visibility"
+            value="public"
+          />
+          <label for="private">Private</label>
+          <input
+            type="radio"
+            name="visibility"
+            id="visibility"
+            value="private"
+          />
+        </fieldset>
+        <button type="submit">Submit</button>
+      </form>
+
+      <!-- Should appear after a quotes wants to be edited -->
+      <form id="editForm" hidden>
+        <h2>Edit quote</h2>
+        <input type="text" placeholder="name" name="name" />
+        <input type="text" placeholder="quote" name="quote" />
+        <button type="submit">Save Change</button>
+      </form>
+    </main>
+    <script>
+      // fetch("/quotes").then(resp => resp.json()).then(quotes => renderQuotes(quotes));
+      function handleDelete(id) {
+        console.log("Delete was triggered with id", id);
+
+        fetch(`/quotes/${id}`, { method: "DELETE" })
+          .then((resp) => {
+            console.log(resp);
+            if (resp.redirected) {
+              window.location.href = resp.url;
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+
+      function handleEdit(id, oldName, oldQuote) {
+        console.log("I was was clicked!", id);
+        // access each input and repopulate them
+        const addForm = document.getElementById("addForm");
+        const editFormEl = document.getElementById("editForm");
+
+        // Hide add form
+        addForm.hidden = true;
+
+        // name
+        editFormEl.elements.name.value = oldName;
+
+        // quote
+        editFormEl.elements.quote.value = oldQuote;
+
+        // Show edit form
+        document.getElementById("editForm").hidden = false;
+
+        // Setup submit handler for edit form
+        editFormEl.onsubmit = (evt) => {
+          evt.preventDefault();
+          // DONE send a put request to server
+          // with new values for name and quote
+          // with current selected id
+
+          const newName = editFormEl.elements.name.value;
+
+          const newQuote = editFormEl.elements.quote.value;
+
+          // tip: use fetch
+          fetch(`/quotes/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json", // let server know that body is a string of json
+            },
+            body: JSON.stringify({ name: newName, quote: newQuote }),
+          })
+            .then((resp) => {
+              console.log(resp);
+              if (resp.redirected) {
+                window.location.href = resp.url;
+              }
+            })
+            .catch((err) => console.error(err));
+        };
+      }
+    </script>
+  </body>
+</html>
