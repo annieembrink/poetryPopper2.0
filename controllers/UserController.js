@@ -67,18 +67,15 @@ async function getHome(req, res) {
      const user = await UserModel.findOne({username: username});
  
      if (user) {
-        q = failUrlEncode("username already taken")
-        url = `/register?${q}`
-        return q 
+        url = "register"
+        return q = failUrlEncode("username already taken")
      }
  
    else {
+        url = "login"
         q = successUrlEncode("Successfully registered user");
-        url = `/login?${q}`
-
           // create User document instance locally
         const userDoc = new UserModel({ username, password });
-
         userDoc.save();
      }
     
@@ -89,7 +86,7 @@ async function getHome(req, res) {
         // return res.redirect(`/register?${q}`);
     } finally {
       // create message that operation was successfull
-      res.redirect(url);
+      res.redirect(`/${url}?${q}`);
     }
   }
   

@@ -23,7 +23,7 @@
         <% } %>
       </ul>
 
-      <h2>Your private Poems</h2>
+      <h2>Your Poems</h2>
       <ul>
         <% for(let i = 0; i < userPoems.length; i++) { %>
         <li>
@@ -43,9 +43,9 @@
       </ul>
 
       <form id="addForm" action="/poems" method="POST">
-        <h2>Add quote</h2>
+        <h2>Add poem</h2>
         <input type="text" placeholder="name" name="name" />
-        <input type="text" placeholder="quote" name="quote" />
+        <input type="text" placeholder="poem" name="poem" />
         <fieldset>
           <legend>Select visibility</legend>
           <label for="public">Public</label>
@@ -68,9 +68,9 @@
 
       <!-- Should appear after a quotes wants to be edited -->
       <form id="editForm" hidden>
-        <h2>Edit quote</h2>
+        <h2>Edit poem</h2>
         <input type="text" placeholder="name" name="name" />
-        <input type="text" placeholder="quote" name="poem" />
+        <input type="text" placeholder="poem" name="poem" />
         <button type="submit">Save Change</button>
       </form>
     </main>
@@ -102,7 +102,7 @@
         editFormEl.elements.name.value = oldName;
 
         // quote
-        editFormEl.elements.quote.value = oldPoem;
+        editFormEl.elements.poem.value = oldPoem;
 
         // Show edit form
         document.getElementById("editForm").hidden = false;
@@ -116,7 +116,7 @@
 
           const newName = editFormEl.elements.name.value;
 
-          const newQuote = editFormEl.elements.quote.value;
+          const newPoem = editFormEl.elements.poem.value;
 
           // tip: use fetch
           fetch(`/poems/${id}`, {
@@ -124,7 +124,7 @@
             headers: {
               "Content-Type": "application/json", // let server know that body is a string of json
             },
-            body: JSON.stringify({ name: newName, quote: newQuote }),
+            body: JSON.stringify({ name: newName, poem: newPoem }),
           })
             .then((resp) => {
               console.log(resp);
