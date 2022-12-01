@@ -2,6 +2,7 @@ import UserModel from "../models/UserModel.js";
 import PoemModel from "../models/PoemModel.js";
 import { ObjectId } from "mongodb";
 import { successUrlEncode, failUrlEncode } from "../utils.js";
+import bcrypt from 'bcryptjs';
 
 async function getHome(req, res) {
     const publicPoems = await PoemModel.find({visibility: 'public'}).populate('postedBy', 'username').exec();
@@ -42,7 +43,7 @@ async function getHome(req, res) {
       return res.redirect(`/login?${q}`);
     } finally {
       const q = successUrlEncode("Successfully logged in");
-      return res.redirect(`/quotes?${q}`);
+      return res.redirect(`/poems?${q}`);
     }
   }
   
@@ -55,31 +56,40 @@ async function getHome(req, res) {
   }
   
   async function register(req, res) {
+
+    let q = null; 
+    let url = null;
     try {
-      // collect data from body
-      const { username, email, password, password2 } = req.body;
-  
-      if (password !== password2) {
-        throw new Error("Password fields does not match");
-      }
-  
-      // create User document instance locally
-      const userDoc = new UserModel({ username, email, password });
-  
-      // validation
-      await userDoc.validate();
-  
-      // save to database
-      userDoc.save();
+
+     // collect data from body
+     const { username, password } = req.body;
+
+     const user = await UserModel.findOne({username: username});
+ 
+     if (user) {
+        q = failUrlEncode("username already taken")
+        url = `/register?${q}`
+        return q 
+     }
+ 
+   else {
+        q = successUrlEncode("Successfully registered user");
+        url = `/login?${q}`
+
+          // create User document instance locally
+        const userDoc = new UserModel({ username, password });
+
+        userDoc.save();
+     }
+    
     } catch (err) {
       // create message that operation was unsuccessfull
       console.error(err.message);
-      const q = failUrlEncode(err.message);
-      return res.redirect(`/register?${q}`);
+      q = failUrlEncode(err.message);
+        // return res.redirect(`/register?${q}`);
     } finally {
       // create message that operation was successfull
-      const q = successUrlEncode("Successfully registered user");
-      res.redirect(`/login?${q}`);
+      res.redirect(url);
     }
   }
   
@@ -88,7 +98,7 @@ async function getHome(req, res) {
       req.session.destroy();
     } catch (err) {
       const q = successUrlEncode("Failed logged out");
-      res.redirect(`/quotes?${q}`);
+      res.redirect(`/poems?${q}`);
     } finally {
       const q = successUrlEncode("Successfully logged out");
       res.redirect(`/?${q}`);

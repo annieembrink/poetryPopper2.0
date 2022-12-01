@@ -14,7 +14,7 @@ function ensureNotAuth(req, res, next) {
         next();
     } else {
         const q = failUrlEncode("You are already authenticated");
-        return res.redirect(`/quotes?${q}`)
+        return res.redirect(`/poems?${q}`)
     }
 }
 
