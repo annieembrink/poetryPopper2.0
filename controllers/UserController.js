@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 async function getHome(req, res) {
     const publicPoems = await PoemModel.find({visibility: 'public'}).populate('postedBy', 'username').exec();
     res.render("home", {
-      serverMessage: req.query || {},
+      serverMessage: req.query,
       pageTitle: "Home",
       isAuth: req.session.isAuth,
       poems: publicPoems

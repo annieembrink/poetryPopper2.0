@@ -13,7 +13,7 @@ async function getAllPoems(req, res) {
   const {userId} = req.session 
   const userPoems = await PoemModel.find( {postedBy: ObjectId(userId)});
 
-  const locals = { publicPoems, userPoems, serverMessage: req.query };
+  const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth };
   res.render("poems", locals);
 }
 

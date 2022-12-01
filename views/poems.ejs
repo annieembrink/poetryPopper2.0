@@ -6,43 +6,43 @@
     <%- include('partials/nav') %>
     <%- include('partials/serverMessage') %>
     <main>
-      <h2>Public Quotes</h2>
+      <h2>Public poems</h2>
       <ul>
-        <% for(let i = 0; i < quotes.length; i++) { %>
+        <% for(let i = 0; i < publicPoems.length; i++) { %>
         <li>
-          <span><%= quotes[i].name %></span>
-          <b><%= quotes[i].quote %></b>
-          <small>by, <%= quotes[i].postedBy?.username %></small>
+          <span><%= publicPoems[i].name %></span>
+          <b><%= publicPoems[i].quote %></b>
+          <small>by, <%= publicPoems[i].postedBy?.username %></small>
           <button
-            onclick="handleEdit('<%= quotes[i]._id %>', '<%= quotes[i].name %>', '<%= quotes[i].quote %>')"
+            onclick="handleEdit('<%= publicPoems[i]._id %>', '<%= publicPoems[i].name %>', '<%= publicPoems[i].quote %>')"
           >
             edit
           </button>
-          <button onclick="handleDelete('<%= quotes[i]._id %>')">delete</button>
+          <button onclick="handleDelete('<%= publicPoems[i]._id %>')">delete</button>
         </li>
         <% } %>
       </ul>
 
-      <h2>Your private Quotes</h2>
+      <h2>Your private Poems</h2>
       <ul>
-        <% for(let i = 0; i < privateQuotes.length; i++) { %>
+        <% for(let i = 0; i < userPoems.length; i++) { %>
         <li>
-          <span><%= privateQuotes[i].name %></span>
-          <b><%= privateQuotes[i].quote %></b>
+          <span><%= userPoems[i].name %></span>
+          <b><%= userPoems[i].quote %></b>
           <small>, by you</small>
           <button
-            onclick="handleEdit('<%= privateQuotes[i]._id %>', '<%= privateQuotes[i].name %>', '<%= privateQuotes[i].quote %>')"
+            onclick="handleEdit('<%= userPoems[i]._id %>', '<%= userPoems[i].name %>', '<%= userPoems[i].quote %>')"
           >
             edit
           </button>
-          <button onclick="handleDelete('<%= privateQuotes[i]._id %>')">
+          <button onclick="handleDelete('<%= userPoems[i]._id %>')">
             delete
           </button>
         </li>
         <% } %>
       </ul>
 
-      <form id="addForm" action="/quotes" method="POST">
+      <form id="addForm" action="/poems" method="POST">
         <h2>Add quote</h2>
         <input type="text" placeholder="name" name="name" />
         <input type="text" placeholder="quote" name="quote" />
@@ -70,7 +70,7 @@
       <form id="editForm" hidden>
         <h2>Edit quote</h2>
         <input type="text" placeholder="name" name="name" />
-        <input type="text" placeholder="quote" name="quote" />
+        <input type="text" placeholder="quote" name="poem" />
         <button type="submit">Save Change</button>
       </form>
     </main>
@@ -79,7 +79,7 @@
       function handleDelete(id) {
         console.log("Delete was triggered with id", id);
 
-        fetch(`/quotes/${id}`, { method: "DELETE" })
+        fetch(`/poems/${id}`, { method: "DELETE" })
           .then((resp) => {
             console.log(resp);
             if (resp.redirected) {
@@ -89,7 +89,7 @@
           .catch((err) => console.log(err));
       }
 
-      function handleEdit(id, oldName, oldQuote) {
+      function handleEdit(id, oldName, oldPoem) {
         console.log("I was was clicked!", id);
         // access each input and repopulate them
         const addForm = document.getElementById("addForm");
@@ -102,7 +102,7 @@
         editFormEl.elements.name.value = oldName;
 
         // quote
-        editFormEl.elements.quote.value = oldQuote;
+        editFormEl.elements.quote.value = oldPoem;
 
         // Show edit form
         document.getElementById("editForm").hidden = false;
@@ -119,7 +119,7 @@
           const newQuote = editFormEl.elements.quote.value;
 
           // tip: use fetch
-          fetch(`/quotes/${id}`, {
+          fetch(`/poems/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json", // let server know that body is a string of json
