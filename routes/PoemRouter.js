@@ -5,6 +5,7 @@ import {ensureAuth} from "../middleware/isAuth.js";
 const PoemRouter = Router();
 
 PoemRouter.get("/poems", ensureAuth, PoemController.getAllPoems);
+PoemRouter.get("/readpoem", ensureAuth, PoemController.getPoem);
 PoemRouter.put("/poems/:id", ensureAuth, PoemController.updatePoem);
 PoemRouter.post("/poems", ensureAuth, PoemController.addPoem);
 PoemRouter.delete("/poems/:id", ensureAuth, PoemController.deletePoem);

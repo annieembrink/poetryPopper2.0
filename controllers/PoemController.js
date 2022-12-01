@@ -16,6 +16,14 @@ async function getAllPoems(req, res) {
   const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth };
   res.render("poems", locals);
 }
+async function getPoem(req, res) {
+  const id = req.params.id;
+  const poem = await PoemModel.findOne({_id: id})
+  console.log(poem)
+  const locals = {poem, pageTitle: "Poems", isAuth: req.session.isAuth, serverMessage: req.query}
+  res.render("readpoem", locals)
+  // res.redirect(`/poems?${id}`)
+}
 
 async function updatePoem(req, res) {
   try {
@@ -90,6 +98,7 @@ async function deletePoem(req, res) {
 
 export default {
   getAllPoems,
+  getPoem,
   updatePoem,
   addPoem,
   deletePoem,

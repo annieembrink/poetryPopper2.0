@@ -28,7 +28,7 @@
         <% for(let i = 0; i < userPoems.length; i++) { %>
         <li>
           <span><%= userPoems[i].name %></span>
-          <b><%= userPoems[i].quote %></b>
+          <!-- <b><%= userPoems[i].quote %></b> -->
           <small>, by you</small>
           <button
             onclick="handleEdit('<%= userPoems[i]._id %>', '<%= userPoems[i].name %>', '<%= userPoems[i].quote %>')"
@@ -37,6 +37,9 @@
           </button>
           <button onclick="handleDelete('<%= userPoems[i]._id %>')">
             delete
+          </button>
+          <button  onclick="readPoem('<%= userPoems[i]._id %>')">
+            <a href="/readpoem">Read poem</a>
           </button>
         </li>
         <% } %>
@@ -75,11 +78,22 @@
       </form>
     </main>
     <script>
-      // fetch("/quotes").then(resp => resp.json()).then(quotes => renderQuotes(quotes));
       function handleDelete(id) {
         console.log("Delete was triggered with id", id);
 
         fetch(`/poems/${id}`, { method: "DELETE" })
+          .then((resp) => {
+            console.log(resp);
+            if (resp.redirected) {
+              window.location.href = resp.url;
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+      function readPoem(id) {
+        console.log("read poem was triggered", id);
+
+        fetch(`/readpoem`, { method: "GET" })
           .then((resp) => {
             console.log(resp);
             if (resp.redirected) {

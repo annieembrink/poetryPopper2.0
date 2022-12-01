@@ -91,13 +91,15 @@ async function getHome(req, res) {
   }
   
   async function logout(req, res) {
+    let q = null; 
+
     try {
       req.session.destroy();
     } catch (err) {
       const q = successUrlEncode("Failed logged out");
       res.redirect(`/poems?${q}`);
     } finally {
-      const q = successUrlEncode("Successfully logged out");
+      const q = successUrlEncode("You have to be logged in to read poems");
       res.redirect(`/?${q}`);
     }
   }

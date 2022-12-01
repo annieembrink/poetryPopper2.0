@@ -27,6 +27,7 @@ function checkSession(req, res, next) {
 
 // tell app to use middleware function everywhere
 app.use(checkSession);
+app.use(express.static('./public'));
 
 // Make sure the express server is using correct middleware to process information correctly
 // middleware can be seen as pre-work before doing the actuall request/response process
