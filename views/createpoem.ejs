@@ -29,6 +29,7 @@
             <input type="radio" name="visibility" id="private" value="private">
             <label for="private">Private</label>
         </div>
+        <button onclick="tryagain()" >Delete and try again</button>
         <button type="submit" onclick="newPoemValue()"><a href="/poems">Create poem</a></button>
 
     </main>
@@ -41,6 +42,7 @@
     const inputPoem = document.getElementById('createpoem');
     const editPoem = document.getElementById('editPoem');
     const editedPoem = document.getElementById('editedPoem');
+    const radioButtons = document.querySelectorAll('input[name="visibility"]')
 
     createPoemForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -53,29 +55,44 @@
         textAreaDiv.appendChild(h2Tag)
         editPoem.innerText = inputPoem.value;
     })
+         
 
     editPoem.addEventListener("mouseup", onMouseUp, false)
 
-    function onMouseUp(e) {
+    function onMouseUp() {
         const activeTextarea = document.activeElement;
         const selection = activeTextarea.value.substring(
             activeTextarea.selectionStart, activeTextarea.selectionEnd)
         console.log(selection)
         const pTag = document.createElement('p');
-        pTag.textContent = selection;
+        pTag.textContent = `${selection}`
         editedPoem.appendChild(pTag)
+    }
+
+    function tryagain() {
+        editedPoem.innerHTML = "";
     }
 
     function newPoemValue() {
         console.log(editedPoem.textContent)
         const h2Title = document.getElementById('h2Title')
 
+        let visibilityValue;
+            for (const radioButton of radioButtons) {
+                if (radioButton.checked) {
+                    visibilityValue = radioButton.value;
+                    break;
+                }
+            }
+        
+            console.log(visibilityValue)
+
         fetch('/createpoem', {
             method: "POST",
             headers: {
               "Content-Type": "application/json", // let server know that body is a string of json
             },
-            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.textContent}),
+            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.textContent, visibility: visibilityValue}),
           })
             .then(res => res.json())
             .then(data => {

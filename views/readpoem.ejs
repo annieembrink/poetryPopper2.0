@@ -6,11 +6,12 @@
     <%- include('partials/nav') %>
     <%- include('partials/serverMessage') %>
     <main>
-    <h1>Read poem</h1>
-    <h2><%=poem.name%></h2>
+    <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
+    <div id="thepoem">
     <p>
       <%=poem.poem%>
     </p>
+  </div>
 
 
 

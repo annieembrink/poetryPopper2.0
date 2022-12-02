@@ -18,7 +18,7 @@ async function getAllPoems(req, res) {
 }
 async function getPoem(req, res) {
   const id = req.params.id;
-  const poem = await PoemModel.findOne({_id: id})
+  const poem = await PoemModel.findOne({_id: id}).populate("postedBy", "username").exec();
   console.log(poem)
   const locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query}
   res.render("readpoem", locals)
@@ -31,6 +31,8 @@ async function getCreatePoem(req, res) {
 }
 
 async function updatePoem(req, res) {
+
+  let q = null; 
   try {
     // get the id of the request
     const id = req.params.id;
@@ -46,10 +48,10 @@ async function updatePoem(req, res) {
 
   } catch(err) {
     console.error(err.message);
-    const q = new URLSearchParams({type: "success", message: err.message});
+    q = new URLSearchParams({type: "success", message: err.message});
     return res.redirect(`/poems?${q}`);
   } finally {
-    const q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
+    q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
     res.redirect(`/poems?${q}`);
   }
 }
@@ -60,12 +62,12 @@ async function addPoem(req, res) {
   try {
     console.log('add poem was requested', req.body)
     // collect data from body
-    const {name, poem} = req.body;
+    const {name, poem, visibility} = req.body;
 
     const postedBy = ObjectId(req.session.userId);
 
     // create Quote document instance locally
-    const poemDoc = new PoemModel({name , poem, postedBy})
+    const poemDoc = new PoemModel({name , poem, visibility, postedBy})
     
     // save to database
     poemDoc.save();
@@ -99,7 +101,7 @@ async function deletePoem(req, res) {
   } catch (err) {
     console.error(err.message);
   } finally {
-    res.redirect("/");
+    res.redirect("/poems");
   }
 }
 
