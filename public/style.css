@@ -10,6 +10,7 @@ body {
     background-color: white;
     font-family: 'Syne Mono', monospace;
     max-width: 500px;
+    height: 100vh;
     margin: auto;
     position: relative;
 }
@@ -49,6 +50,10 @@ input {
 }
 #createTitle {
   border-radius: 10px;
+}
+
+#textAreaDiv {
+  /* height: 300px; */
 }
 
 #editPoem {

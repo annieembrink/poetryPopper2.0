@@ -60,12 +60,12 @@ async function addPoem(req, res) {
   try {
     console.log('add poem was requested', req.body)
     // collect data from body
-    const {name, poem, visibility} = req.body;
+    const {name, poem} = req.body;
 
     const postedBy = ObjectId(req.session.userId);
 
     // create Quote document instance locally
-    const poemDoc = new PoemModel({name , poem, visibility, postedBy})
+    const poemDoc = new PoemModel({name , poem, postedBy})
     
     // save to database
     poemDoc.save();

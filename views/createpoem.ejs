@@ -10,29 +10,33 @@
     <main>
         <h1>Create poem</h1>
 
-        <form id="addForm" action="/createpoem" method="POST">
+        <form id="addForm">
             <div class="poemContent">
                 <input id="createTitle" type="text" placeholder="title" name="name" />
                 <input id="createpoem" type="text" placeholder="poem" name="poem" />
             </div>
-            <div class="visibilityButtons">
-                <input type="radio" name="visibility" id="public" value="public">
-                <label for="public">Public</label>
-                <input type="radio" name="visibility" id="private" value="private">
-                <label for="private">Private</label>
-            </div>
+        
             <button id="addForm" type="submit">Submit</button>
         </form>
 
-        <textarea readonly oninput="onInput(this)" id="editPoem"></textarea>
+    <div id="textAreaDiv">
+        <textarea readonly id="editPoem"></textarea>
+    </div>
         <div id="editedPoem"></div>
-        <button>Submit</button>
+        <div class="visibilityButtons">
+            <input type="radio" name="visibility" id="public" value="public">
+            <label for="public">Public</label>
+            <input type="radio" name="visibility" id="private" value="private">
+            <label for="private">Private</label>
+        </div>
+        <button type="submit" onclick="newPoemValue()"><a href="/poems">Create poem</a></button>
 
     </main>
 </body>
 
 <script>
     const createPoemForm = document.getElementById('addForm');
+    const textAreaDiv = document.getElementById('textAreaDiv');
     const inputTitle = document.getElementById('createTitle');
     const inputPoem = document.getElementById('createpoem');
     const editPoem = document.getElementById('editPoem');
@@ -44,12 +48,9 @@
 
         const h2Tag = document.createElement('h2');
         h2Tag.innerText = inputTitle.value;
+        h2Tag.setAttribute('id', 'h2Title')
 
-        const pTag = document.createElement('p');
-        pTag.innerText = inputPoem.value;
-
-        // editPoem.appendChild(h2Tag);
-        // h2Tag.appendChild(pTag);
+        textAreaDiv.appendChild(h2Tag)
         editPoem.innerText = inputPoem.value;
     })
 
@@ -65,11 +66,24 @@
         editedPoem.appendChild(pTag)
     }
 
-    function onInput(el) {
-        if (oField.scrollHeight > oField.clientHeight) {
-    oField.style.height = `${oField.scrollHeight}px`;
-  }
+    function newPoemValue() {
+        console.log(editedPoem.textContent)
+        const h2Title = document.getElementById('h2Title')
+
+        fetch('/createpoem', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // let server know that body is a string of json
+            },
+            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.textContent}),
+          })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data)
+            })
+            .catch((err) => console.error(err));
     }
+
 </script>
 
 </html>
