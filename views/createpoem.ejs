@@ -1,23 +1,75 @@
 <html lang="en">
-  <head>
-      <%- include('partials/header') %> 
-  </head>
-  <body>
+
+<head>
+    <%- include('partials/header') %>
+</head>
+
+<body>
     <%- include('partials/nav') %>
     <%- include('partials/serverMessage') %>
     <main>
-    <h1>Create poem</h1>
+        <h1>Create poem</h1>
 
-    <form id="addForm" action="/createpoem" method="POST">
-        <input type="text" placeholder="title" name="name" />
-        <input id="createpoem" type="text" placeholder="poem" name="poem" />
-        <button id="addForm" type="submit">Submit</button>
-    </form>
+        <form id="addForm" action="/createpoem" method="POST">
+            <div class="poemContent">
+                <input id="createTitle" type="text" placeholder="title" name="name" />
+                <input id="createpoem" type="text" placeholder="poem" name="poem" />
+            </div>
+            <div class="visibilityButtons">
+                <input type="radio" name="visibility" id="public" value="public">
+                <label for="public">Public</label>
+                <input type="radio" name="visibility" id="private" value="private">
+                <label for="private">Private</label>
+            </div>
+            <button id="addForm" type="submit">Submit</button>
+        </form>
 
-    <button name="visibility" id="visibility" value="public">Public</button>
-    <button name="visibility" id="visibility" value="private">Private</button>
-     
-  </main>
-  </body>
+        <textarea readonly oninput="onInput(this)" id="editPoem"></textarea>
+        <div id="editedPoem"></div>
+        <button>Submit</button>
+
+    </main>
+</body>
+
+<script>
+    const createPoemForm = document.getElementById('addForm');
+    const inputTitle = document.getElementById('createTitle');
+    const inputPoem = document.getElementById('createpoem');
+    const editPoem = document.getElementById('editPoem');
+    const editedPoem = document.getElementById('editedPoem');
+
+    createPoemForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        createPoemForm.style.display = 'none';
+
+        const h2Tag = document.createElement('h2');
+        h2Tag.innerText = inputTitle.value;
+
+        const pTag = document.createElement('p');
+        pTag.innerText = inputPoem.value;
+
+        // editPoem.appendChild(h2Tag);
+        // h2Tag.appendChild(pTag);
+        editPoem.innerText = inputPoem.value;
+    })
+
+    editPoem.addEventListener("mouseup", onMouseUp, false)
+
+    function onMouseUp(e) {
+        const activeTextarea = document.activeElement;
+        const selection = activeTextarea.value.substring(
+            activeTextarea.selectionStart, activeTextarea.selectionEnd)
+        console.log(selection)
+        const pTag = document.createElement('p');
+        pTag.textContent = selection;
+        editedPoem.appendChild(pTag)
+    }
+
+    function onInput(el) {
+        if (oField.scrollHeight > oField.clientHeight) {
+    oField.style.height = `${oField.scrollHeight}px`;
+  }
+    }
+</script>
 
 </html>

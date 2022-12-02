@@ -7,16 +7,18 @@
 }
 
 body {
-    background-color: rgb(255, 250, 243);
+    background-color: white;
     font-family: 'Syne Mono', monospace;
     max-width: 500px;
     margin: auto;
+    position: relative;
 }
 
 .fa-bars {
   position: absolute;
   top: 10px;
   right: 10px;
+  font-size: 2rem;
 }
 
 h1, h2, h3, h4 {
@@ -28,21 +30,58 @@ input {
   border-radius: 100px;
   border: none;
   margin: 5px 0;
+
+  background-color: #D9D9D9;
+  border-radius: 10px;
+  border-radius: 10px;
+  box-shadow: inset 5px 5px 10px #c1c1c1,
+              inset -5px -5px 10px #ffffff;
+}
+
+.poemContent {
+  display: flex;
+  flex-direction: column;
 }
 
 #createpoem {
   min-height: 100px;
+  border-radius: 10px;
 }
+#createTitle {
+  border-radius: 10px;
+}
+
+#editPoem {
+  border: none;
+  font-size: 1.5rem;
+
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
+  resize: none;
+}
+
+#editPoem:focus {
+  outline: none;
+}
+
 button {
   padding: 10px 20px;
   border: none;
   border-radius: 100px;
   min-width: 20%;
+  background-color: #6D213C;
+  color: white;
 }
 
 a {
   text-decoration: none;
   color: black;
+}
+
+button a {
+  color: white;
 }
 
 ul {
