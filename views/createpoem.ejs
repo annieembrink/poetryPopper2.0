@@ -1,0 +1,23 @@
+<html lang="en">
+  <head>
+      <%- include('partials/header') %> 
+  </head>
+  <body>
+    <%- include('partials/nav') %>
+    <%- include('partials/serverMessage') %>
+    <main>
+    <h1>Create poem</h1>
+
+    <form id="addForm" action="/createpoem" method="POST">
+        <input type="text" placeholder="title" name="name" />
+        <input id="createpoem" type="text" placeholder="poem" name="poem" />
+        <button id="addForm" type="submit">Submit</button>
+    </form>
+
+    <button name="visibility" id="visibility" value="public">Public</button>
+    <button name="visibility" id="visibility" value="private">Private</button>
+     
+  </main>
+  </body>
+
+</html>

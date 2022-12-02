@@ -20,8 +20,13 @@ async function getPoem(req, res) {
   const id = req.params.id;
   const poem = await PoemModel.findOne({_id: id})
   console.log(poem)
-  const locals = {poem, pageTitle: "Poems", isAuth: req.session.isAuth, serverMessage: req.query}
+  const locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query}
   res.render("readpoem", locals)
+  // res.redirect(`/poems?${id}`)
+}
+async function getCreatePoem(req, res) {
+  const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query}
+  res.render("createpoem", locals)
   // res.redirect(`/poems?${id}`)
 }
 
@@ -53,6 +58,7 @@ async function addPoem(req, res) {
   let query = null;
 
   try {
+    console.log('add poem was requested', req.body)
     // collect data from body
     const {name, poem, visibility} = req.body;
 
@@ -72,7 +78,8 @@ async function addPoem(req, res) {
     console.error(err.message);
   } finally {
     const queryStr = query.toString();
-    res.redirect(`/poems?${queryStr}`);
+    // res.redirect(`/poems?${queryStr}`);
+    res.redirect(`/createpoem`);
   }
 }
 
@@ -99,6 +106,7 @@ async function deletePoem(req, res) {
 export default {
   getAllPoems,
   getPoem,
+  getCreatePoem,
   updatePoem,
   addPoem,
   deletePoem,

@@ -9,13 +9,31 @@
 body {
     background-color: rgb(255, 250, 243);
     font-family: 'Syne Mono', monospace;
+    max-width: 500px;
+    margin: auto;
+}
+
+.fa-bars {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 h1, h2, h3, h4 {
   margin: 20px 0;
 }
 
-.btn {
+input {
+  padding: 10px;
+  border-radius: 100px;
+  border: none;
+  margin: 5px 0;
+}
+
+#createpoem {
+  min-height: 100px;
+}
+button {
   padding: 10px 20px;
   border: none;
   border-radius: 100px;
