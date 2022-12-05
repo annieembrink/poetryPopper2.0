@@ -31,6 +31,7 @@ const poemSchema = {
     default: "public"
   },
   postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  comments: {type: mongoose.Schema.Types.ObjectId, ref: 'Comment'},
 };
 
 const PoemModel = mongoose.model("Poem", poemSchema);

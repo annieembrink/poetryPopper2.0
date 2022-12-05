@@ -30,6 +30,9 @@ async function getPoem(req, res) {
 
   //find the clicked poem in db
   const poem = await PoemModel.findOne({_id: poemId}).populate("postedBy", "username").exec();
+  console.log('populate poem', poem)
+
+  const comments = await CommentModel.find({poemId: poemId}).populate("comment", "comment").exec();
 
   //Find who created that poem
   const whoCreatedThePoem = poem.postedBy._id.valueOf()
@@ -39,13 +42,13 @@ async function getPoem(req, res) {
 
   if (whoCreatedThePoem === userId) {
       userPoemMatch = true;
-      locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch}
+      locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments}
       res.render("readAndEditPoem", locals)
 
 
   } else {
     userPoemMatch = false; 
-    locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId}
+    locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments}
     res.render("readPoem", locals)
   }
 
@@ -141,14 +144,25 @@ async function commentPoem(req, res) {
     console.log('the comment', req.body.comment)
     console.log('who wants to comment', req.session.userId)
     console.log('id of poem', req.body.id)
-
     console.log('comment poem was requested', req.body)
+    
+    const comment = req.body.comment
+    const commentedBy = ObjectId(req.session.userId)
+    const poemId = ObjectId(req.body.id)
+    // const {id} = req.body;
+    const poem = await PoemModel.findOne({_id: poemId}).populate("postedBy", "username").exec();
+
+    console.log('the comments', comments)
+
+    // const poem = await PoemModel.findOne({_id: id})
+    // await poem.updateOne({comment: comment})
+    // console.log(poem)
+
     // collect data from body
-    const {comment, id} = req.body;
-    const whoMadeComment = req.session.userId;
+    // const whoMadeComment = req.session.userId;
 
     // create Quote document instance locally
-    const commentDoc = new CommentModel({comment, id, whoMadeComment})
+    const commentDoc = new CommentModel({comment, poemId, commentedBy})
     
     // save to database
     commentDoc.save();
@@ -156,10 +170,14 @@ async function commentPoem(req, res) {
     // create message that operation was successfull
     // query = new URLSearchParams({type: "success", message: "Successfully created poem!"});
 
+    // const locals = {pageTitle: "read poem", isAuth: req.session.isAuth, serverMessage: req.query, comments, poem}
+
+    res.json(comments)
+
   } catch (err) {
     console.error(err.message);
   } finally {
-    res.redirect("/poems");
+    // res.redirect("/poems");
   }
 }
 

@@ -21,10 +21,10 @@ const commentSchema = {
     type: String,
     required: "must be filled in",
   },
-  id: {
+  poemId: {
     type: String,
   },
-  whoMadeComment: {
+  commentedBy: {
     type: String,
   }
 };

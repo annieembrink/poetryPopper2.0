@@ -12,11 +12,14 @@
       <%=poem.poem%>
     </p>
 
+    <h2><%=comments.map(comment => comment.comment)%></h2>
+
     <p>Leave a nice comment!</p>
     <form>
       <input type="text" id="commentTextArea" name="comment">
       <button type="submit" onclick="postComment('<%= poem._id%>')">Send comment</button>
     </form>
+
 
   </main>
 
@@ -38,6 +41,18 @@
             .then(data => {
               console.log(data)
             })
+            .catch((err) => console.error(err));
+    }
+
+    function getComments() {
+      fetch('/poems', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // let server know that body is a string of json
+            },
+            body: JSON.stringify({ comment: commentTextArea.value, id: id }),
+          })
+            .then(res => res.json())
             .catch((err) => console.error(err));
     }
         
