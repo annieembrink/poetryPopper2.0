@@ -1,4 +1,5 @@
 import PoemModel from "../models/PoemModel.js";
+import CommentModel from "../models/CommentModel.js";
 // import qs from "querystring";
 import { ObjectId } from "mongodb";
 
@@ -140,6 +141,20 @@ async function commentPoem(req, res) {
     console.log('the comment', req.body.comment)
     console.log('who wants to comment', req.session.userId)
     console.log('id of poem', req.body.id)
+
+    console.log('comment poem was requested', req.body)
+    // collect data from body
+    const {comment, id} = req.body;
+    const whoMadeComment = req.session.userId;
+
+    // create Quote document instance locally
+    const commentDoc = new CommentModel({comment, id, whoMadeComment})
+    
+    // save to database
+    commentDoc.save();
+
+    // create message that operation was successfull
+    // query = new URLSearchParams({type: "success", message: "Successfully created poem!"});
 
   } catch (err) {
     console.error(err.message);
