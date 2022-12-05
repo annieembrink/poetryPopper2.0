@@ -7,75 +7,41 @@
     <%- include('partials/serverMessage') %>
     <main>
     <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
-    <div id="thepoem">
+    <div id="thepoem"></div>
     <p>
       <%=poem.poem%>
     </p>
-    <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit()"></i>
-  </div>
 
-   <!-- Should appear after a poems wants to be edited -->
-   <form id="editForm" hidden>
-    <h2>Edit poem</h2>
-    <input type="text" placeholder="name" name="name" />
-    <input type="text" placeholder="poem" name="poem" />
-    <button type="submit">Save Change</button>
-</form>
-
-
+    <p>Leave a nice comment!</p>
+    <form>
+      <input type="text" id="commentTextArea" name="comment">
+      <button type="submit" onclick="postComment('<%= poem._id%>')">Send comment</button>
+    </form>
 
   </main>
+
   <script>
-       function handleEdit(id, oldName, oldPoem) {
-            console.log("I was was clicked!", id);
-            console.log("I was was clicked!", oldPoem);
-            // access each input and repopulate them
-            const addForm = document.getElementById("addForm");
-            const editFormEl = document.getElementById("editForm");
 
-            // Hide add form
-            // addForm.hidden = true;
+    const commentTextArea = document.getElementById('commentTextArea')
 
-            // name
-            editFormEl.elements.name.value = oldName;
+    function postComment(id) {
+    console.log('id', id)
 
-            // poem
-            editFormEl.elements.poem.value = oldPoem;
-
-            // Show edit form
-            document.getElementById("editForm").hidden = false;
-
-            // Setup submit handler for edit form
-            editFormEl.onsubmit = (evt) => {
-                evt.preventDefault();
-                // DONE send a put request to server
-                // with new values for name and poem
-                // with current selected id
-
-                const newName = editFormEl.elements.name.value;
-
-                const newPoem = editFormEl.elements.poem.value;
-
-                // tip: use fetch
-                fetch(`/poems/${id}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json", // let server know that body is a string of json
-                        },
-                        body: JSON.stringify({
-                            name: newName,
-                            poem: newPoem
-                        }),
-                    })
-                    .then((resp) => {
-                        console.log(resp);
-                        if (resp.redirected) {
-                            window.location.href = resp.url;
-                        }
-                    })
-                    .catch((err) => console.error(err));
-            };
-        }
+      fetch('/poems', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // let server know that body is a string of json
+            },
+            body: JSON.stringify({ comment: commentTextArea.value, id: id }),
+          })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data)
+            })
+            .catch((err) => console.error(err));
+    }
+        
   </script>
+
   </body>
 </html>

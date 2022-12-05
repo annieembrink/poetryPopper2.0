@@ -20,7 +20,7 @@ app.set('view engine', 'ejs')
 // Middleware
 
 function checkSession(req, res, next) {
-  console.log("session", req.session);
+  // console.log("session", req.session);
 
   next();
 }

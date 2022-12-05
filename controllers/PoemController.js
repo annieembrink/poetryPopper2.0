@@ -16,7 +16,11 @@ async function getAllPoems(req, res) {
   const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth };
   res.render("poems", locals);
 }
+
 async function getPoem(req, res) {
+  let userPoemMatch = false;
+  let locals = {}
+
   //id of clicked poem
   const poemId = req.params.id;
 
@@ -32,9 +36,20 @@ async function getPoem(req, res) {
   console.log('Who wrote the poem', whoCreatedThePoem)
   console.log('Who wants to edit it', userId)
 
+  if (whoCreatedThePoem === userId) {
+      userPoemMatch = true;
+      locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch}
+      res.render("readAndEditPoem", locals)
+
+
+  } else {
+    userPoemMatch = false; 
+    locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId}
+    res.render("readPoem", locals)
+  }
+
   //send this data to ejs page
-  const locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId}
-  res.render("readpoem", locals)
+
 }
 async function getCreatePoem(req, res) {
   const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query}
@@ -120,6 +135,19 @@ async function deletePoem(req, res) {
   }
 }
 
+async function commentPoem(req, res) {
+  try {
+    console.log('the comment', req.body.comment)
+    console.log('who wants to comment', req.session.userId)
+    console.log('id of poem', req.body.id)
+
+  } catch (err) {
+    console.error(err.message);
+  } finally {
+    res.redirect("/poems");
+  }
+}
+
 export default {
   getAllPoems,
   getPoem,
@@ -127,4 +155,5 @@ export default {
   updatePoem,
   addPoem,
   deletePoem,
+  commentPoem
 };
