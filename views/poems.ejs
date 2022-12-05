@@ -18,9 +18,8 @@
                     <small>by, <%= publicPoems[i].postedBy?.username %></small>
                 </div>
                 <div id="iconDiv">
-                    <i class="fas fa-sharp fa-solid fa-pen edit"
-                        onclick="handleEdit('<%= publicPoems[i]._id %>', '<%= publicPoems[i].name %>', '<%= publicPoems[i].poem %>')"></i>
-                    <i class="fas fa-solid fa-trash delete" onclick="handleDelete('<%= publicPoems[i]._id %>')"></i>
+                    <!-- <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit('<%= publicPoems[i]._id %>', '<%= publicPoems[i].name %>', '<%= publicPoems[i].poem %>')"></i> -->
+                    <!-- <i class="fas fa-solid fa-trash delete" onclick="handleDelete('<%= publicPoems[i]._id %>')"></i> -->
 
                     <a href="/poems/<%=publicPoems[i]._id%>">
                         <i class="fas fa-solid fa-book-open read" onclick="readPoem('<%= publicPoems[i]._id %>')"></i>
@@ -34,14 +33,16 @@
         <ul>
             <% for(let i = 0; i < userPoems.length; i++) { %>
             <li id="poemLi">
+        <% console.log(userPoems[i].poem) %>
+
                 <div id="poemDiv">
                     <span><%= userPoems[i].name %></span>
                     <!-- <b><%= userPoems[i].poem %></b> -->
                     <small>by, <%= userPoems[i].postedBy?.username %></small>
                 </div>
                 <div id="iconDiv">
-                    <i class="fas fa-sharp fa-solid fa-pen edit"
-                        onclick="handleEdit('<%= userPoems[i]._id %>', '<%= userPoems[i].name %>', '<%= userPoems[i].poem %>')"></i>
+                    <!-- <i class="fas fa-sharp fa-solid fa-pen edit"
+                        onclick="handleEdit('<%= userPoems[i]._id %>', '<%= userPoems[i].name %>', '<%= userPoems[i].poem %>')"></i> -->
                     <i class="fas fa-solid fa-trash delete" onclick="handleDelete('<%= userPoems[i]._id %>')"></i>
 
                     <a href="/poems/<%=userPoems[i]._id%>">
@@ -52,14 +53,13 @@
             </li>
             <% } %>
         </ul>
-
-        <!-- Should appear after a poems wants to be edited -->
+<!-- 
         <form id="editForm" hidden>
             <h2>Edit poem</h2>
             <input type="text" placeholder="name" name="name" />
             <input type="text" placeholder="poem" name="poem" />
             <button type="submit">Save Change</button>
-        </form>
+        </form> -->
     </main>
     <script>
         function handleDelete(id) {
@@ -92,55 +92,56 @@
                 .catch((err) => console.log(err));
         }
 
-        function handleEdit(id, oldName, oldPoem) {
-            console.log("I was was clicked!", id);
-            // access each input and repopulate them
-            const addForm = document.getElementById("addForm");
-            const editFormEl = document.getElementById("editForm");
+        // function handleEdit(id, oldName, oldPoem) {
+        //     console.log("I was was clicked!", id);
+        //     console.log("I was was clicked!", oldPoem);
+        //     // access each input and repopulate them
+        //     const addForm = document.getElementById("addForm");
+        //     const editFormEl = document.getElementById("editForm");
 
-            // Hide add form
-            // addForm.hidden = true;
+        //     // Hide add form
+        //     // addForm.hidden = true;
 
-            // name
-            editFormEl.elements.name.value = oldName;
+        //     // name
+        //     editFormEl.elements.name.value = oldName;
 
-            // poem
-            editFormEl.elements.poem.value = oldPoem;
+        //     // poem
+        //     editFormEl.elements.poem.value = oldPoem;
 
-            // Show edit form
-            document.getElementById("editForm").hidden = false;
+        //     // Show edit form
+        //     document.getElementById("editForm").hidden = false;
 
-            // Setup submit handler for edit form
-            editFormEl.onsubmit = (evt) => {
-                evt.preventDefault();
-                // DONE send a put request to server
-                // with new values for name and poem
-                // with current selected id
+        //     // Setup submit handler for edit form
+        //     editFormEl.onsubmit = (evt) => {
+        //         evt.preventDefault();
+        //         // DONE send a put request to server
+        //         // with new values for name and poem
+        //         // with current selected id
 
-                const newName = editFormEl.elements.name.value;
+        //         const newName = editFormEl.elements.name.value;
 
-                const newPoem = editFormEl.elements.poem.value;
+        //         const newPoem = editFormEl.elements.poem.value;
 
-                // tip: use fetch
-                fetch(`/poems/${id}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json", // let server know that body is a string of json
-                        },
-                        body: JSON.stringify({
-                            name: newName,
-                            poem: newPoem
-                        }),
-                    })
-                    .then((resp) => {
-                        console.log(resp);
-                        if (resp.redirected) {
-                            window.location.href = resp.url;
-                        }
-                    })
-                    .catch((err) => console.error(err));
-            };
-        }
+        //         // tip: use fetch
+        //         fetch(`/poems/${id}`, {
+        //                 method: "PUT",
+        //                 headers: {
+        //                     "Content-Type": "application/json", // let server know that body is a string of json
+        //                 },
+        //                 body: JSON.stringify({
+        //                     name: newName,
+        //                     poem: newPoem
+        //                 }),
+        //             })
+        //             .then((resp) => {
+        //                 console.log(resp);
+        //                 if (resp.redirected) {
+        //                     window.location.href = resp.url;
+        //                 }
+        //             })
+        //             .catch((err) => console.error(err));
+        //     };
+        // }
     </script>
 </body>
 

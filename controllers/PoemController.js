@@ -17,12 +17,24 @@ async function getAllPoems(req, res) {
   res.render("poems", locals);
 }
 async function getPoem(req, res) {
-  const id = req.params.id;
-  const poem = await PoemModel.findOne({_id: id}).populate("postedBy", "username").exec();
-  console.log(poem)
-  const locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query}
+  //id of clicked poem
+  const poemId = req.params.id;
+
+  //id of logged in user
+  const {userId} = req.session 
+
+  //find the clicked poem in db
+  const poem = await PoemModel.findOne({_id: poemId}).populate("postedBy", "username").exec();
+
+  //Find who created that poem
+  const whoCreatedThePoem = poem.postedBy._id.valueOf()
+
+  console.log('Who wrote the poem', whoCreatedThePoem)
+  console.log('Who wants to edit it', userId)
+
+  //send this data to ejs page
+  const locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId}
   res.render("readpoem", locals)
-  // res.redirect(`/poems?${id}`)
 }
 async function getCreatePoem(req, res) {
   const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query}
@@ -45,6 +57,8 @@ async function updatePoem(req, res) {
       { _id: ObjectId(id) },
       { name, poem, visibility }
     );
+    res.redirect(`/poems?${q}`);
+
 
   } catch(err) {
     console.error(err.message);
@@ -52,7 +66,7 @@ async function updatePoem(req, res) {
     return res.redirect(`/poems?${q}`);
   } finally {
     q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
-    res.redirect(`/poems?${q}`);
+    // res.redirect(`/poems?${q}`);
   }
 }
 
@@ -89,6 +103,7 @@ async function deletePoem(req, res) {
   try {
     // get id from params /poems/<this-part>
     const { id } = req.params;
+    
   
     // get result from deletion
     const result = await PoemModel.deleteOne({ _id: id });

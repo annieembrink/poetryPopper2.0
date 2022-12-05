@@ -65,7 +65,7 @@
             activeTextarea.selectionStart, activeTextarea.selectionEnd)
         console.log(selection)
         const pTag = document.createElement('p');
-        pTag.textContent = `${selection}`
+        pTag.textContent = `${selection.trim()}`
         editedPoem.appendChild(pTag)
     }
 
@@ -85,7 +85,7 @@
                 }
             }
         
-            console.log(visibilityValue)
+            console.log(visibilityValue, editedPoem.textContent)
 
         fetch('/createpoem', {
             method: "POST",
