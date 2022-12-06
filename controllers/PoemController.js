@@ -16,11 +16,9 @@ async function getAllPoems(req, res) {
 
   const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
 
-  
-
   console.log('userpoems', userPoems)
 
-  const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth };
+  const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
   res.render("poems", locals);
 }
 
@@ -49,12 +47,12 @@ async function getPoem(req, res) {
 
   if (whoCreatedThePoem === userId) {
       userPoemMatch = true;
-      locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments}
+      locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments, user: req.session.username}
       res.render("readAndEditPoem", locals)
 
   } else {
     userPoemMatch = false; 
-    locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments}
+    locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments, user: req.session.username}
     res.render("readPoem", locals)
   }
 
@@ -62,7 +60,7 @@ async function getPoem(req, res) {
 
 }
 async function getCreatePoem(req, res) {
-  const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query}
+  const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query, user: req.session.username}
   res.render("createpoem", locals)
   // res.redirect(`/poems?${id}`)
 }

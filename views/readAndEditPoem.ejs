@@ -7,12 +7,12 @@
     <%- include('partials/serverMessage') %>
     <main>
     <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
-    <div id="thepoem">
-    <p>
+    <div id="poemDiv">
+    <p id="thePoem">
       <%=poem.poem%>
     </p>
 
-    <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit('<%=poem._id%>', '<%=poem.name%>', '<%=poem.poem%>')"></i>
+    <button class="edit" onclick="handleEdit('<%=poem._id%>', '<%=poem.name%>')">Edit poem</button>
   </div>
 
    <!-- Should appear after a poems wants to be edited -->
@@ -27,15 +27,10 @@
 
   </main>
   <script>
-       function handleEdit(id, oldName, oldPoem) {
-            // console.log("I was was clicked!", id);
-            console.log("I was was clicked!", oldPoem);
-            // access each input and repopulate them
-            // const addForm = document.getElementById("addForm");
+       function handleEdit(id, oldName) {
+            // console.log("I was was clicked!", oldPoem);
             const editFormEl = document.getElementById("editForm");
-
-            // Hide add form
-            // addForm.hidden = true;
+            const oldPoem = document.getElementById('thePoem').textContent
 
             // name
             editFormEl.elements.name.value = oldName;
@@ -47,11 +42,8 @@
             document.getElementById("editForm").hidden = false;
 
             // Setup submit handler for edit form
-            editFormEl.onsubmit = (evt) => {
-                evt.preventDefault();
-                // DONE send a put request to server
-                // with new values for name and poem
-                // with current selected id
+            editFormEl.onsubmit = (e) => {
+                e.preventDefault();
 
                 const newName = editFormEl.elements.name.value;
 

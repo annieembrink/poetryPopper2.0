@@ -10,7 +10,8 @@ async function getHome(req, res) {
       serverMessage: req.query,
       pageTitle: "Home",
       isAuth: req.session.isAuth,
-      poems: publicPoems
+      poems: publicPoems,
+      user: req.session.username || null
     });
   }
 
@@ -19,6 +20,8 @@ async function getHome(req, res) {
       serverMessage: req.query,
       pageTitle: "Login",
       isAuth: req.session.isAuth,
+      user: req.session.username || null
+
     });
   }
   
@@ -37,6 +40,7 @@ async function getHome(req, res) {
   
       req.session.isAuth = true;
       req.session.userId = user._id;
+      req.session.username = req.body.username
     } catch (err) {
       console.error(err.message);
       const q = failUrlEncode(err.message);
