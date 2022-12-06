@@ -9,11 +9,15 @@
     <h2>
       <span id="theTitle"><%=poem.name%></span>
       <small>, by <%=poem.postedBy?.username%></small>
+      <p id="visibility"><%=poem.visibility%></p>
+
     </h2>
     <div id="poemDiv">
     <p id="thePoem">
       <%=poem.poem%>
     </p>
+   
+   
 
     <button class="edit" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
   </div>
@@ -21,8 +25,12 @@
    <!-- Should appear after a poems wants to be edited -->
    <form id="editForm" hidden>
     <h2>Edit poem</h2>
-    <!-- <input type="text" placeholder="name" name="name" />
-    <input type="text" placeholder="poem" name="poem" /> -->
+    <div class="visibilityButtons">
+      <input type="radio" name="visibility" id="public" value="public" >
+      <label for="public">Public</label>
+      <input type="radio" name="visibility" id="private" value="private" >
+      <label for="private">Private</label>
+  </div>
     <button type="submit">Save Change</button>
 </form>
 
@@ -34,17 +42,20 @@
             const editFormEl = document.getElementById("editForm");
             const oldPoem = document.getElementById('thePoem')
             const oldName = document.getElementById('theTitle')
-            // oldPoem.setAttribute("contenteditable", true)
+            const visibility = document.getElementById('visibility')
+            
+            let oldVisibility; 
+
+            if (visibility.textContent === "public") {
+              oldVisibility = "public";
+            } else if (visibility.textContent === "private") {
+              oldVisibility = "private"
+            }
+
             oldPoem.contentEditable = "true";
             oldPoem.focus()
             oldName.contentEditable = "true";
-            // oldName.focus()
-
-            // name
-            // editFormEl.elements.name.value = oldName;
-
-            // poem
-            // editFormEl.elements.poem.value = oldPoem;
+            editFormEl.elements.visibility.value = oldVisibility;
 
             // Show edit form
             document.getElementById("editForm").hidden = false;
@@ -54,8 +65,8 @@
                 e.preventDefault();
 
                 const newName = oldName.innerText
-
                 const newPoem = oldPoem.innerText
+                const newVisibility = editFormEl.elements.visibility.value
 
                 // tip: use fetch
                 fetch(`/poems/${id}`, {
@@ -65,7 +76,8 @@
                         },
                         body: JSON.stringify({
                             name: newName,
-                            poem: newPoem
+                            poem: newPoem,
+                            visibility: newVisibility
                         }),
                     })
                     .then((resp) => {

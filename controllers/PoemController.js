@@ -3,27 +3,30 @@ import CommentModel from "../models/CommentModel.js";
 // import qs from "querystring";
 import { ObjectId } from "mongodb";
 
+//Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
-  // get all public Poems
-  // make sure that postedBy gets populated with the user
+  //Find all public poems and populate username
   const publicPoems = await PoemModel.find({visibility: 'public'}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
-  // get all Poems posted by logged in user
-  // session should have userId
-  // because it is added in AuthController.login
+  //We need id of auth and logged in user to display their own poems
   const {userId} = req.session 
-  // const userPoems = await PoemModel.find( {postedBy: ObjectId(userId)});
 
+  //Find them in db
   const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
 
-  console.log('userpoems', userPoems)
-
   const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+
+  //render poems page
   res.render("poems", locals);
 }
 
+//Get requested poem, open one specific poem to read
 async function getPoem(req, res) {
+
+  //False from start
   let userPoemMatch = false;
+
+  //Empty from start
   let locals = {}
 
   //id of clicked poem
@@ -35,34 +38,29 @@ async function getPoem(req, res) {
   //find the clicked poem in db
   const poem = await PoemModel.findOne({_id: poemId}).populate("postedBy", "username").exec();
 
+  //find comments connected to clicked poem
   const comments = await CommentModel.find({poemId: poemId}).populate("postedBy", "username").exec();
-  // const comments = await CommentModel.find({poemId: poemId}).populate("comment", "comment").exec();
-  console.log('comments', comments)
 
   //Find who created that poem
-  const whoCreatedThePoem = poem.postedBy._id.valueOf()
+  const whoCreatedThePoem = poem.postedBy._id.valueOf();
 
-  console.log('Who wrote the poem', whoCreatedThePoem)
-  console.log('Who wants to edit it', userId)
-
+  //render edit page if user who requests poem is the same as created the poem
   if (whoCreatedThePoem === userId) {
       userPoemMatch = true;
       locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments, user: req.session.username}
-      res.render("readAndEditPoem", locals)
+      res.render("readAndEditPoem", locals) //render page with possibility to edit
 
-  } else {
+  } else { //render read page if user who requests poem did not create it
     userPoemMatch = false; 
     locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments, user: req.session.username}
-    res.render("readPoem", locals)
+    res.render("readPoem", locals) //render page with possibility to read and comment
   }
-
-  //send this data to ejs page
-
 }
+
+//Get page create poem
 async function getCreatePoem(req, res) {
   const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query, user: req.session.username}
-  res.render("createpoem", locals)
-  // res.redirect(`/poems?${id}`)
+  res.render("createpoem", locals) //render page
 }
 
 async function updatePoem(req, res) {
@@ -81,7 +79,6 @@ async function updatePoem(req, res) {
       { name, poem, visibility }
     );
     res.redirect(`/poems?${q}`);
-
 
   } catch(err) {
     console.error(err.message);
@@ -127,7 +124,6 @@ async function deletePoem(req, res) {
     // get id from params /poems/<this-part>
     const { id } = req.params;
     
-  
     // get result from deletion
     const result = await PoemModel.deleteOne({ _id: id });
     
@@ -145,13 +141,8 @@ async function deletePoem(req, res) {
 
 async function commentPoem(req, res) {
   try {
-    console.log('the comment', req.body.comment)
-    console.log('who wants to comment', req.session.userId)
-    console.log('id of poem', req.body.id)
-    console.log('comment poem was requested', req.body)
     
     const comment = req.body.comment
-    // const commentedById = ObjectId(req.session.userId)
     const poemId = ObjectId(req.body.id)
     const postedBy = req.session.userId
 
