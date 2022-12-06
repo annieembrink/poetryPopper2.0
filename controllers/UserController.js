@@ -56,6 +56,8 @@ async function getHome(req, res) {
       serverMessage: {},
       pageTitle: "Register",
       isAuth: req.session.isAuth,
+      user: req.session.username || null
+
     });
   }
   
