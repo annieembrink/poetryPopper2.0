@@ -12,7 +12,7 @@
       <%=poem.poem%>
     </p>
 
-    <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit()"></i>
+    <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit('<%=poem._id%>', '<%=poem.name%>', '<%=poem.poem%>')"></i>
   </div>
 
    <!-- Should appear after a poems wants to be edited -->
@@ -28,10 +28,10 @@
   </main>
   <script>
        function handleEdit(id, oldName, oldPoem) {
-            console.log("I was was clicked!", id);
+            // console.log("I was was clicked!", id);
             console.log("I was was clicked!", oldPoem);
             // access each input and repopulate them
-            const addForm = document.getElementById("addForm");
+            // const addForm = document.getElementById("addForm");
             const editFormEl = document.getElementById("editForm");
 
             // Hide add form
