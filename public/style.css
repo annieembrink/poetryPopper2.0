@@ -9,10 +9,41 @@
 body {
     background-color: white;
     font-family: 'Syne Mono', monospace;
-    max-width: 500px;
-    height: 100vh;
+    /* max-width: 500px; */
+    /* height: 100vh; */
     margin: auto;
     position: relative;
+}
+
+#nonAuthMenu, #authMenu {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#nonAuthMenu li, #authMenu li{
+  margin: 20px 0;
+}
+
+#authMenu #logOutButton {
+  margin-top: 40px;
+}
+
+
+#homePoems {
+  margin-bottom: 50px;
+}
+
+#navDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: white;
+  width: 100vw;
+  height: 100vh;
 }
 
 .fa-bars {
@@ -20,6 +51,31 @@ body {
   top: 10px;
   right: 10px;
   font-size: 2rem;
+  z-index: 2000;
+  color: #BAAB68;
+}
+
+.homePoem {
+  background-color: lightgray;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+.homePoem #thePoem {
+  color: rgb(102, 102, 102);
+}
+
+
+
+.loggedInUser {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  padding: 20px 0 10px 10px;
+  width: 100%;
+  background-color: white;
+  z-index: 100;
 }
 
 i {
@@ -27,7 +83,7 @@ i {
 }
 
 h1, h2, h3, h4 {
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 input {
@@ -37,10 +93,10 @@ input {
   margin: 5px 0;
 
   background-color: #D9D9D9;
-  border-radius: 10px;
+  /* border-radius: 10px;
   border-radius: 10px;
   box-shadow: inset 5px 5px 10px #c1c1c1,
-              inset -5px -5px 10px #ffffff;
+              inset -5px -5px 10px #ffffff; */
 }
 
 .poemContent {
@@ -118,15 +174,22 @@ header {
   justify-content: center;
   align-items: center;
   color: rgb(255, 250, 243);
-  position: relative;
   margin-bottom: 20px;
 }
 
-.loggedInUser {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
+header h1 {
+  font-size: 1.5rem;
 }
+
+header h2 {
+  font-size: 1rem;
+}
+
+header p {
+  font-size: 0.8rem;
+}
+
+
 
 #headerContent {
   text-align: center;
