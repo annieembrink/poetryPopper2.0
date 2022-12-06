@@ -24,9 +24,12 @@ const commentSchema = {
   poemId: {
     type: String,
   },
-  commentedBy: {
+  commentedById: {
     type: String,
-  }
+  },
+
+  postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+
 };
 
 const CommentModel = mongoose.model("Comment", commentSchema);

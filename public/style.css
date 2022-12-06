@@ -131,3 +131,15 @@ header {
   .fail {
     color: orange;
   }
+
+  .commentDiv {
+    margin: 20px 0;
+  }
+
+.commentPostedBy {
+
+}
+
+.comment {
+
+}

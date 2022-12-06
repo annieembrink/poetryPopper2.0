@@ -12,14 +12,18 @@
       <%=poem.poem%>
     </p>
 
-    <h2><%=comments.map(comment => comment.comment)%></h2>
-
     <p>Leave a nice comment!</p>
     <form>
       <input type="text" id="commentTextArea" name="comment">
       <button type="submit" onclick="postComment('<%= poem._id%>')">Send comment</button>
     </form>
 
+    <% for(let i = 0; i < comments.length; i++) { %>
+      <div class="commentDiv">
+        <p class="commentPostedBy">Comment by, <%=comments[i].postedBy?.username%>: </p>
+          <p class="comment"><%= comments[i].comment %></p>
+      </div>
+  <% } %>
 
   </main>
 
