@@ -6,20 +6,23 @@
     <%- include('partials/nav') %>
     <%- include('partials/serverMessage') %>
     <main>
-    <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
+    <h2>
+      <span id="theTitle"><%=poem.name%></span>
+      <small>, by <%=poem.postedBy?.username%></small>
+    </h2>
     <div id="poemDiv">
     <p id="thePoem">
       <%=poem.poem%>
     </p>
 
-    <button class="edit" onclick="handleEdit('<%=poem._id%>', '<%=poem.name%>')">Edit poem</button>
+    <button class="edit" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
   </div>
 
    <!-- Should appear after a poems wants to be edited -->
    <form id="editForm" hidden>
     <h2>Edit poem</h2>
-    <input type="text" placeholder="name" name="name" />
-    <input type="text" placeholder="poem" name="poem" />
+    <!-- <input type="text" placeholder="name" name="name" />
+    <input type="text" placeholder="poem" name="poem" /> -->
     <button type="submit">Save Change</button>
 </form>
 
@@ -27,16 +30,21 @@
 
   </main>
   <script>
-       function handleEdit(id, oldName) {
-            // console.log("I was was clicked!", oldPoem);
+       function handleEdit(id) {
             const editFormEl = document.getElementById("editForm");
-            const oldPoem = document.getElementById('thePoem').textContent
+            const oldPoem = document.getElementById('thePoem')
+            const oldName = document.getElementById('theTitle')
+            // oldPoem.setAttribute("contenteditable", true)
+            oldPoem.contentEditable = "true";
+            oldPoem.focus()
+            oldName.contentEditable = "true";
+            // oldName.focus()
 
             // name
-            editFormEl.elements.name.value = oldName;
+            // editFormEl.elements.name.value = oldName;
 
             // poem
-            editFormEl.elements.poem.value = oldPoem;
+            // editFormEl.elements.poem.value = oldPoem;
 
             // Show edit form
             document.getElementById("editForm").hidden = false;
@@ -45,9 +53,9 @@
             editFormEl.onsubmit = (e) => {
                 e.preventDefault();
 
-                const newName = editFormEl.elements.name.value;
+                const newName = oldName.innerText
 
-                const newPoem = editFormEl.elements.poem.value;
+                const newPoem = oldPoem.innerText
 
                 // tip: use fetch
                 fetch(`/poems/${id}`, {
