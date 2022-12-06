@@ -8,8 +8,7 @@
     <main>
     <h2>
       <span id="theTitle"><%=poem.name%></span>
-      <small>, by <%=poem.postedBy?.username%></small>
-      <p id="visibility"><%=poem.visibility%></p>
+      <small>, by <%=poem.postedBy?.username%> (<small id="visibility"><%=poem.visibility%></small>)</small>
 
     </h2>
     <div id="poemDiv">
@@ -42,23 +41,16 @@
             const editFormEl = document.getElementById("editForm");
             const oldPoem = document.getElementById('thePoem')
             const oldName = document.getElementById('theTitle')
-            const visibility = document.getElementById('visibility')
+            const oldVisibility = document.getElementById('visibility').textContent
             
-            let oldVisibility; 
-
-            if (visibility.textContent === "public") {
-              oldVisibility = "public";
-            } else if (visibility.textContent === "private") {
-              oldVisibility = "private"
-            }
-
             oldPoem.contentEditable = "true";
             oldPoem.focus()
             oldName.contentEditable = "true";
-            editFormEl.elements.visibility.value = oldVisibility;
 
             // Show edit form
             document.getElementById("editForm").hidden = false;
+            editFormEl.elements.visibility.value = oldVisibility;
+            console.log(oldVisibility)
 
             // Setup submit handler for edit form
             editFormEl.onsubmit = (e) => {

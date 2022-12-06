@@ -78,7 +78,7 @@ async function updatePoem(req, res) {
       { _id: ObjectId(id) },
       { name, poem, visibility }
     );
-    res.redirect(`/poems?${q}`);
+    // res.redirect(`/poems?${q}`);
 
   } catch(err) {
     console.error(err.message);
@@ -86,7 +86,7 @@ async function updatePoem(req, res) {
     return res.redirect(`/poems?${q}`);
   } finally {
     q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
-    // res.redirect(`/poems?${q}`);
+    res.redirect(`/poems?${q}`);
   }
 }
 
