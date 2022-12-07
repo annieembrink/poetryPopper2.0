@@ -26,28 +26,36 @@ async function getHome(req, res) {
   }
   
   async function login(req, res) {
+
+    let url; 
+    let q;
+
     try {
       // collect data from body
       const { username, password } = req.body;
   
       const user = await UserModel.findOne({ username: username });
   
-      if (!user) {
-        throw new Error("No user found with that username");
-      }
+      // if (!user) {
+      //   throw new Error("No user found with that username");
+      // }
   
       await user.comparePassword(password, user.password);
   
       req.session.isAuth = true;
       req.session.userId = user._id;
       req.session.username = req.body.username
+
+      url = "poems"
+
+      q = successUrlEncode("Successfully logged in");
+
     } catch (err) {
-      console.error(err.message);
-      const q = failUrlEncode(err.message);
-      return res.redirect(`/login?${q}`);
+      console.error('catch', err.message);
+      q = failUrlEncode("Something went wrong, try again");
+      url = "login"
     } finally {
-      const q = successUrlEncode("Successfully logged in");
-      return res.redirect(`/poems?${q}`);
+      res.redirect(`/${url}?${q}`); 
     }
   }
   
@@ -102,10 +110,10 @@ async function getHome(req, res) {
     try {
       req.session.destroy();
     } catch (err) {
-      const q = successUrlEncode("Failed logged out");
+      q = successUrlEncode("Failed logged out");
       res.redirect(`/poems?${q}`);
     } finally {
-      const q = successUrlEncode("You have to be logged in to read poems");
+      q = successUrlEncode("You have to be logged in to read poems");
       res.redirect(`/?${q}`);
     }
   }

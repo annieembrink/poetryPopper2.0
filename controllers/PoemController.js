@@ -1,35 +1,43 @@
 import PoemModel from "../models/PoemModel.js";
 import CommentModel from "../models/CommentModel.js";
+import { successUrlEncode, failUrlEncode } from "../utils.js";
 // import qs from "querystring";
 import { ObjectId } from "mongodb";
 
 //Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
-  //Find all public poems and populate username
-  const publicPoems = await PoemModel.find({visibility: 'public'}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
+  
+    let locals = {};
 
-  //We need id of auth and logged in user to display their own poems
-  const {userId} = req.session 
+  try {
+    //Find all public poems and populate username
+    const publicPoems = await PoemModel.find({visibility: 'public'}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
-  //Find them in db
-  const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
+    //We need id of auth and logged in user to display their own poems
+    const {userId} = req.session 
 
-  const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+    //Find them in db
+    const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
 
-  //render poems page
-  res.render("poems", locals);
+    locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+
+  } catch (error) {
+    console.log(error)
+  } finally {
+    //render poems page
+    res.render("poems", locals);
+  }
 }
 
 //Get requested poem, open one specific poem to read
 async function getPoem(req, res) {
 
-  //False from start
   let userPoemMatch = false;
-
-  //Empty from start
   let locals = {}
+  let renderString = "";
 
-  //id of clicked poem
+  try {
+      //id of clicked poem
   const poemId = req.params.id;
 
   //id of logged in user
@@ -48,17 +56,25 @@ async function getPoem(req, res) {
   if (whoCreatedThePoem === userId) {
       userPoemMatch = true;
       locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments, user: req.session.username}
-      res.render("readAndEditPoem", locals) //render page with possibility to edit
-
+      renderString = "readAndEditPoem"
   } else { //render read page if user who requests poem did not create it
     userPoemMatch = false; 
     locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments, user: req.session.username}
-    res.render("readPoem", locals) //render page with possibility to read and comment
+    renderString = "readPoem"
   }
-}
+
+  } catch (error) {
+    console.log(error)
+
+  } finally {
+    res.render(renderString, locals) //render page with possibility to edit
+  }
+} 
 
 //Get page create poem
 async function getCreatePoem(req, res) {
+  let q = null; 
+
   const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query, user: req.session.username}
   res.render("createpoem", locals) //render page
 }
@@ -67,35 +83,30 @@ async function updatePoem(req, res) {
 
   let q = null; 
   try {
-    // get the id of the request
     const id = req.params.id;
 
     const { name, poem, visibility}  = req.body;
     
-    // find old Poem and replace doc from collection
-    // validation happens as we update
     await PoemModel.updateOne(
       { _id: ObjectId(id) },
       { name, poem, visibility }
     );
-    // res.redirect(`/poems?${q}`);
+    q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
 
   } catch(err) {
     console.error(err.message);
-    q = new URLSearchParams({type: "success", message: err.message});
-    return res.redirect(`/poems?${q}`);
+    q = new URLSearchParams({type: "fail", message: err.message});
   } finally {
-    q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
     res.redirect(`/poems?${q}`);
   }
 }
 
 async function addPoem(req, res) {
-  let query = null;
+  let q = null;
 
   try {
     console.log('add poem was requested', req.body)
-    // collect data from body
+
     const {name, poem, visibility} = req.body;
 
     const postedBy = ObjectId(req.session.userId);
@@ -107,19 +118,22 @@ async function addPoem(req, res) {
     poemDoc.save();
 
     // create message that operation was successfull
-    query = new URLSearchParams({type: "success", message: "Successfully created poem!"});
+    q = new URLSearchParams({type: "success", message: "Successfully created poem!"});
   } catch (err) {
     // create message that operation was unsuccessfull
-    query = new URLSearchParams({type: "fail", message: err.message});
     console.error(err.message);
+    q = new URLSearchParams({type: "fail", message: err.message});
   } finally {
-    const queryStr = query.toString();
     // res.redirect(`/poems?${queryStr}`);
-    res.redirect(`/createpoem`);
+    // res.redirect(`/createpoem?${q}`); 
+    const backURL = req.header('Referer') || '/';
+    res.redirect(backURL);
   }
 }
 
 async function deletePoem(req, res) {
+  let q = null;
+
   try {
     // get id from params /poems/<this-part>
     const { id } = req.params;
@@ -132,14 +146,20 @@ async function deletePoem(req, res) {
       throw {message: "No deletion was made"};
     }
 
+    q = new URLSearchParams({type: "success", message: "Successfully deleted poem!"});
+
   } catch (err) {
     console.error(err.message);
+    q = new URLSearchParams({type: "fail", message: err.message});
+
   } finally {
-    res.redirect("/poems");
+    res.redirect(`/poems${q}`);
   }
 }
 
 async function commentPoem(req, res) {
+  let q = null;
+
   try {
     
     const comment = req.body.comment
@@ -148,22 +168,22 @@ async function commentPoem(req, res) {
 
     const commentDoc = new CommentModel({comment, poemId, postedBy})
     
-    // save to database
     await commentDoc.save();
 
     await PoemModel.findOneAndUpdate({_id: ObjectId(poemId)}, {$push: {"comments": commentDoc._id}});
 
-    // create message that operation was successfull
-    // query = new URLSearchParams({type: "success", message: "Successfully created poem!"});
-
-    // const locals = {pageTitle: "read poem", isAuth: req.session.isAuth, serverMessage: req.query, comments, poem}
-
-    // res.json(comments)
+    // q = new URLSearchParams({type: "success", message: "Successfully commented poem!"});
+    q = successUrlEncode("Successfully commented poem")
 
   } catch (err) {
     console.error(err.message);
+    // q = new URLSearchParams({type: "fail", message: err.message});
+
   } finally {
-    // res.redirect("/poems");
+    // const backURL = req.header('Referer') || '/';
+    // res.redirect(backURL); `${backURL + q}`
+    // res.redirect(`${backURL}`); 
+    res.redirect(`/poems${q}`)
   }
 }
 
