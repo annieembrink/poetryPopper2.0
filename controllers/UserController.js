@@ -16,13 +16,14 @@ async function getHome(req, res) {
   }
 
   async function getLogin(req, res) {
-    res.render("login", {
-      serverMessage: req.query,
-      pageTitle: "Login",
-      isAuth: req.session.isAuth,
-      user: req.session.username || null
-
-    });
+    let locals;
+    try {
+      locals = {serverMessage: req.query, pageTitle: "Login", isAuth: req.session.isAuth, user: req.session.username || null}
+    } catch (error) {
+      console.log(error)
+    } finally {
+      res.render("login", locals)
+    }
   }
   
   async function login(req, res) {
@@ -31,14 +32,9 @@ async function getHome(req, res) {
     let q;
 
     try {
-      // collect data from body
       const { username, password } = req.body;
   
       const user = await UserModel.findOne({ username: username });
-  
-      // if (!user) {
-      //   throw new Error("No user found with that username");
-      // }
   
       await user.comparePassword(password, user.password);
   
@@ -60,13 +56,14 @@ async function getHome(req, res) {
   }
   
   async function getRegister(req, res) {
-    res.render("register", {
-      serverMessage: {},
-      pageTitle: "Register",
-      isAuth: req.session.isAuth,
-      user: req.session.username || null
-
-    });
+    let locals;
+    try {
+      locals = { serverMessage: req.query, pageTitle: "Register", isAuth: req.session.isAuth, user: req.session.username || null }
+    } catch (error) {
+      console.log(error)
+    } finally {
+    res.render("register", locals)
+    }
   }
   
   async function register(req, res) {
@@ -75,45 +72,43 @@ async function getHome(req, res) {
     let url = null;
     try {
 
-     // collect data from body
      const { username, password } = req.body;
 
      const user = await UserModel.findOne({username: username});
  
      if (user) {
         url = "register"
-        return q = failUrlEncode("username already taken")
+        q = failUrlEncode("username already taken")
      }
  
    else {
         url = "login"
         q = successUrlEncode("Successfully registered user");
-          // create User document instance locally
         const userDoc = new UserModel({ username, password });
         userDoc.save();
      }
     
     } catch (err) {
-      // create message that operation was unsuccessfull
       console.error(err.message);
-      q = failUrlEncode(err.message);
-        // return res.redirect(`/register?${q}`);
+      url = "register"
+      q = failUrlEncode("something went wrong, try again");
     } finally {
-      // create message that operation was successfull
       res.redirect(`/${url}?${q}`);
     }
   }
   
   async function logout(req, res) {
     let q = null; 
+    let url;
 
     try {
       req.session.destroy();
+      q = successUrlEncode("Successfully logged out");
+      url = ""
     } catch (err) {
-      q = successUrlEncode("Failed logged out");
-      res.redirect(`/poems?${q}`);
+      q = failUrlEncode("Failed logged out");
+      url = "poems";
     } finally {
-      q = successUrlEncode("You have to be logged in to read poems");
       res.redirect(`/?${q}`);
     }
   }
