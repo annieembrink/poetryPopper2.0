@@ -13,7 +13,7 @@ PoemRouter.delete("/poems/:id", ensureAuth, PoemController.deletePoem);
 PoemRouter.get("/createpoem", ensureAuth, PoemController.getCreatePoem)
 PoemRouter.post("/createpoem", ensureAuth, PoemController.addPoem);
 
-PoemRouter.post("/newpoem", ensureAuth, (req, res) => {res.json(req.body)});
+// PoemRouter.post("/newpoem", ensureAuth, (req, res) => {res.json(req.body)});
 
 
 export default PoemRouter;

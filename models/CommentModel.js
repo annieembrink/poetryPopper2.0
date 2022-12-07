@@ -24,9 +24,6 @@ const commentSchema = {
   poemId: {
     type: String,
   },
-  commentedById: {
-    type: String,
-  },
 
   postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 

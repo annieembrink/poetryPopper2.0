@@ -68,8 +68,8 @@ async function getHome(req, res) {
   
   async function register(req, res) {
 
-    let q = null; 
-    let url = null;
+    let q; 
+    let url;
     try {
 
      const { username, password } = req.body;
@@ -98,7 +98,7 @@ async function getHome(req, res) {
   }
   
   async function logout(req, res) {
-    let q = null; 
+    let q; 
     let url;
 
     try {

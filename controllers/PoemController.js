@@ -3,11 +3,12 @@ import CommentModel from "../models/CommentModel.js";
 import { successUrlEncode, failUrlEncode } from "../utils.js";
 // import qs from "querystring";
 import { ObjectId } from "mongodb";
+import { fail } from "assert";
 
 //Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
   
-    let locals = {};
+    let locals;
 
   try {
     //Find all public poems and populate username
@@ -33,8 +34,8 @@ async function getAllPoems(req, res) {
 async function getPoem(req, res) {
 
   let userPoemMatch = false;
-  let locals = {}
-  let renderString = "";
+  let locals;
+  let renderString;
 
   try {
       //id of clicked poem
@@ -67,21 +68,26 @@ async function getPoem(req, res) {
     console.log(error)
 
   } finally {
-    res.render(renderString, locals) //render page with possibility to edit
+    res.render(renderString, locals) 
   }
 } 
 
 //Get page create poem
 async function getCreatePoem(req, res) {
-  let q = null; 
-
-  const locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query, user: req.session.username}
-  res.render("createpoem", locals) //render page
+  let locals; 
+  try {
+    locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query, user: req.session.username}
+  } catch (error) {
+    console.log(error)
+  } finally {
+    res.render("createpoem", locals) //render page
+  }
 }
 
 async function updatePoem(req, res) {
 
-  let q = null; 
+  let q;
+
   try {
     const id = req.params.id;
 
@@ -91,48 +97,40 @@ async function updatePoem(req, res) {
       { _id: ObjectId(id) },
       { name, poem, visibility }
     );
-    q = new URLSearchParams({type: "success", message: "Successfully updated poem!"});
+    q = successUrlEncode("Successfully updated poem!");
 
   } catch(err) {
     console.error(err.message);
-    q = new URLSearchParams({type: "fail", message: err.message});
+    q = failUrlEncode("Couldn't update poem, try again")
+  } finally {
+    const backURL = req.header('Referer') || '/';
+    res.redirect(`/${backURL}?${q}`);
+  }
+}
+
+async function addPoem(req, res) {
+  let q;
+
+  try {
+    const {name, poem, visibility} = req.body;
+
+    const postedBy = ObjectId(req.session.userId);
+
+    const poemDoc = new PoemModel({name , poem, visibility, postedBy})
+    
+    poemDoc.save();
+
+    q = successUrlEncode("Successfully created poem")
+  } catch (err) {
+    console.error(err.message);
+    q = failUrlEncode("Something went wrong, try again")
   } finally {
     res.redirect(`/poems?${q}`);
   }
 }
 
-async function addPoem(req, res) {
-  let q = null;
-
-  try {
-    console.log('add poem was requested', req.body)
-
-    const {name, poem, visibility} = req.body;
-
-    const postedBy = ObjectId(req.session.userId);
-
-    // create Quote document instance locally
-    const poemDoc = new PoemModel({name , poem, visibility, postedBy})
-    
-    // save to database
-    poemDoc.save();
-
-    // create message that operation was successfull
-    q = new URLSearchParams({type: "success", message: "Successfully created poem!"});
-  } catch (err) {
-    // create message that operation was unsuccessfull
-    console.error(err.message);
-    q = new URLSearchParams({type: "fail", message: err.message});
-  } finally {
-    // res.redirect(`/poems?${queryStr}`);
-    // res.redirect(`/createpoem?${q}`); 
-    const backURL = req.header('Referer') || '/';
-    res.redirect(backURL);
-  }
-}
-
 async function deletePoem(req, res) {
-  let q = null;
+  let q;
 
   try {
     // get id from params /poems/<this-part>
@@ -153,12 +151,15 @@ async function deletePoem(req, res) {
     q = new URLSearchParams({type: "fail", message: err.message});
 
   } finally {
-    res.redirect(`/poems${q}`);
+    res.redirect(`/poems?${q}`);
   }
+}
+async function commentPoem2(id, comment) {
+  return 
 }
 
 async function commentPoem(req, res) {
-  let q = null;
+  let q;
 
   try {
     
@@ -170,21 +171,27 @@ async function commentPoem(req, res) {
     
     await commentDoc.save();
 
-    await PoemModel.findOneAndUpdate({_id: ObjectId(poemId)}, {$push: {"comments": commentDoc._id}});
+    console.log('The new comment', commentDoc)
+
+    const commentsThatShowOnPage = await CommentModel.find({poemId: poemId})
+    console.log(commentsThatShowOnPage)
+
+    const theCommentedPoem = await PoemModel.find({_id: poemId})
+    console.log('the commented poem', theCommentedPoem)
+
+    const result = await PoemModel.updateOne({_id: poemId}, {comments: commentsThatShowOnPage});
+    // const result = await PoemModel.updateOne({_id: poemId}, {$push: {"comments": commentDoc._id}});
+    console.log('result of poem model update one', result)
+    res.json({message: "hello"})
 
     // q = new URLSearchParams({type: "success", message: "Successfully commented poem!"});
     q = successUrlEncode("Successfully commented poem")
 
   } catch (err) {
     console.error(err.message);
-    // q = new URLSearchParams({type: "fail", message: err.message});
+    q = failUrlEncode("Couldn't comment, try again")
 
-  } finally {
-    // const backURL = req.header('Referer') || '/';
-    // res.redirect(backURL); `${backURL + q}`
-    // res.redirect(`${backURL}`); 
-    res.redirect(`/poems${q}`)
-  }
+  } 
 }
 
 export default {
