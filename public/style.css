@@ -205,7 +205,7 @@ input {
 }
 
 #thepoem {
-  white-space: pre-line;
+  /* white-space: pre-line; */
   text-align: left;
   padding: 10px;
   border-radius: 10px;

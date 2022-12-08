@@ -51,13 +51,7 @@
             </li>
             <% } %>
         </ul>
-<!-- 
-        <form id="editForm" hidden>
-            <h2>Edit poem</h2>
-            <input type="text" placeholder="name" name="name" />
-            <input type="text" placeholder="poem" name="poem" />
-            <button type="submit">Save Change</button>
-        </form> -->
+
     </main>
     <script>
         function handleDelete(id) {
@@ -81,10 +75,10 @@
             fetch(`/poems/${id}`, {
                     method: "GET"
                 })
-                .then((resp) => {
-                    console.log(resp);
-                    if (resp.redirected) {
-                        window.location.href = resp.url;
+                .then((res) => {
+                    console.log(res);
+                    if (res.redirected) {
+                        window.location.href = res.url;
                     }
                 })
                 .catch((err) => console.log(err));

@@ -109,6 +109,7 @@ async function updatePoem(req, res) {
     failOrSuccess = "Success"
     msg = "Successfully updated poem!";
     q = successUrlEncode("Successfully updated poem")
+    res.redirect(`/poems/${id}/edited?${q}`);
 
 
   } catch(err) {
@@ -116,13 +117,10 @@ async function updatePoem(req, res) {
     failOrSuccess = "Success"
     msg = "Couldn't update poem, try again"
     q = failUrlEncode("Could not update poem")
+    res.redirect(`/poems/${id}`);
 
 
-  } finally {
-    const backURL = req.header('Referer') || '/';
-    console.log(backURL)
-    res.redirect(`/poems?${q}`);
-  }
+  } 
 }
 
 async function addPoem(req, res) {
@@ -156,16 +154,11 @@ async function deletePoem(req, res) {
     // get result from deletion
     const result = await PoemModel.deleteOne({ _id: id });
     
-    // make sure there was a deletion otherwise raise exception
-    if (result.deletedCount == 0) {
-      throw {message: "No deletion was made"};
-    }
-
-    q = new URLSearchParams({type: "success", message: "Successfully deleted poem!"});
+    q = successUrlEncode("Successfully deleted poem!");
 
   } catch (err) {
     console.error(err.message);
-    q = new URLSearchParams({type: "fail", message: err.message});
+    q = failUrlEncode("Something went wrong, try again");
 
   } finally {
     res.redirect(`/poems?${q}`);

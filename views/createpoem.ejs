@@ -73,7 +73,7 @@
             activeTextarea.selectionStart, activeTextarea.selectionEnd)
         console.log(selection)
         const pTag = document.createElement('p');
-        pTag.textContent = `${selection.trim()} \n`
+        pTag.innerText = `${selection.trim()}`
         editedPoem.appendChild(pTag)
     }
 
@@ -93,19 +93,21 @@
                 }
             }
         
-            console.log(visibilityValue, editedPoem.textContent)
+            console.log(visibilityValue, editedPoem.innerText)
 
         fetch('/createpoem', {
             method: "POST",
             headers: {
               "Content-Type": "application/json", // let server know that body is a string of json
             },
-            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.textContent, visibility: visibilityValue}),
+            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.innerText, visibility: visibilityValue}),
           })
-            .then(res => res.json())
-            .then(data => {
-              console.log(data)
-            })
+          .then((res) => {
+                    console.log(res);
+                    if (res.redirected) {
+                        window.location.href = res.url;
+                    }
+                })
             .catch((err) => console.error(err));
     }
 

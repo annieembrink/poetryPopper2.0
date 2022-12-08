@@ -7,6 +7,7 @@ const PoemRouter = Router();
 PoemRouter.get("/poems", ensureAuth, PoemController.getAllPoems);
 PoemRouter.post("/poems", ensureAuth, PoemController.commentPoem);
 PoemRouter.get("/poems/:id", ensureAuth, PoemController.getPoem);
+PoemRouter.get("/poems/:id/edited", ensureAuth, PoemController.getPoem);
 PoemRouter.put("/poems/:id", ensureAuth, PoemController.updatePoem);
 PoemRouter.delete("/poems/:id", ensureAuth, PoemController.deletePoem);
 
