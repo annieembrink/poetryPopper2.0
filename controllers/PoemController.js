@@ -11,6 +11,10 @@ async function getAllPoems(req, res) {
     let locals;
 
   try {
+
+    console.log('req query', req.query)
+
+    if(req.query.message) {
     //Find all public poems and populate username
     const publicPoems = await PoemModel.find({visibility: 'public'}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
@@ -21,6 +25,7 @@ async function getAllPoems(req, res) {
     const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
 
     locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+    }
 
   } catch (error) {
     console.log(error)
@@ -128,12 +133,13 @@ async function addPoem(req, res) {
     poemDoc.save();
 
     q = successUrlEncode("Successfully created poem")
+    res.redirect(`/poems/added?${q}`);
+
   } catch (err) {
     console.error(err.message);
     q = failUrlEncode("Something went wrong, try again")
-  } finally {
     res.redirect(`/poems?${q}`);
-  }
+  } 
 }
 
 async function deletePoem(req, res) {
