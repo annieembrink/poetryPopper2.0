@@ -7,12 +7,6 @@ import { fail } from "assert";
 
 //Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
-  
-    let locals;
-
-  try {
-
-    console.log('req query', req.query)
 
     if(req.query.message) {
     //Find all public poems and populate username
@@ -24,15 +18,11 @@ async function getAllPoems(req, res) {
     //Find them in db
     const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
 
-    locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+    const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+    // console.log('get all poems', req.query)
+    res.render("poems", locals);
     }
 
-  } catch (error) {
-    console.log(error)
-  } finally {
-    //render poems page
-    res.render("poems", locals);
-  }
 }
 
 //Get requested poem, open one specific poem to read
@@ -133,6 +123,7 @@ async function addPoem(req, res) {
     poemDoc.save();
 
     q = successUrlEncode("Successfully created poem")
+    console.log(`/poems/added?${q}`)
     res.redirect(`/poems/added?${q}`);
 
   } catch (err) {
@@ -174,32 +165,19 @@ async function commentPoem(req, res) {
     const postedBy = req.session.userId
 
     const commentDoc = new CommentModel({comment, poemId, postedBy})
-    // const commentsThatShowOnPage = await CommentModel.find({poemId: poemId})
-    // console.log('commentsthatshowonpage', commentsThatShowOnPage)
-    
-    // const updatePoemComments = await PoemModel.updateOne({_id: ObjectId(poemId)}, {comments: commentsThatShowOnPage});
-    // const updatedComments = await commentDoc.save();
-    // console.log('updated poem comments', updatePoemComments)
 
-    // console.log('does this happen?')
-    // q = successUrlEncode("Successfully commented poem")
-    // // res.redirect(`/poems?${q}`)
-    // res.redirect(`/poems?${q}`)
+    // save comment
+    await commentDoc.save();
+    // get this particular post
+    const postRelated = await PoemModel.findById(poemId);
+    // push the comment into the post.comments array
+    postRelated.comments.push(commentDoc);
+    // save and redirect...
+    await postRelated.save()
 
-          // save comment
-      await commentDoc.save();
-          // get this particular post
-       const postRelated = await PoemModel.findById(poemId);
-          // push the comment into the post.comments array
-       postRelated.comments.push(commentDoc);
-          // save and redirect...
-       await postRelated.save()
-
-       console.log('does this happen?')
-       q = successUrlEncode("Successfully commented poem")
-       res.redirect(`${poemId}/comment?${q}`)
-       // res.redirect(`/poems?${q}`)
-      //  res.redirect(`/poems/${poemId}?${q}`)
+    console.log('does this happen?')
+    q = successUrlEncode("Successfully commented poem")
+    res.redirect(`${poemId}/comment?${q}`)
 
   } catch (err) {
     console.error(err.message);
