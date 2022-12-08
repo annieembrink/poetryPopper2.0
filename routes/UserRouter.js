@@ -14,6 +14,7 @@ UserRouter.get("/register", ensureNotAuth, UserController.getRegister);
 UserRouter.post("/register", ensureNotAuth, UserController.register);
 
 UserRouter.get("/logout", ensureAuth, UserController.logout)
+// UserRouter.get("*", ensureAuth, UserController.getHome)
 
 
 export default UserRouter;

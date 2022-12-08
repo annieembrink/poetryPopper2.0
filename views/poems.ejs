@@ -77,63 +77,13 @@
                 })
                 .then((res) => {
                     console.log(res);
-                    if (res.redirected) {
-                        window.location.href = res.url;
-                    }
+                    // if (res.redirected) {
+                    //     window.location.href = res.url;
+                    // }
                 })
                 .catch((err) => console.log(err));
         }
 
-        // function handleEdit(id, oldName, oldPoem) {
-        //     console.log("I was was clicked!", id);
-        //     console.log("I was was clicked!", oldPoem);
-        //     // access each input and repopulate them
-        //     const addForm = document.getElementById("addForm");
-        //     const editFormEl = document.getElementById("editForm");
-
-        //     // Hide add form
-        //     // addForm.hidden = true;
-
-        //     // name
-        //     editFormEl.elements.name.value = oldName;
-
-        //     // poem
-        //     editFormEl.elements.poem.value = oldPoem;
-
-        //     // Show edit form
-        //     document.getElementById("editForm").hidden = false;
-
-        //     // Setup submit handler for edit form
-        //     editFormEl.onsubmit = (evt) => {
-        //         evt.preventDefault();
-        //         // DONE send a put request to server
-        //         // with new values for name and poem
-        //         // with current selected id
-
-        //         const newName = editFormEl.elements.name.value;
-
-        //         const newPoem = editFormEl.elements.poem.value;
-
-        //         // tip: use fetch
-        //         fetch(`/poems/${id}`, {
-        //                 method: "PUT",
-        //                 headers: {
-        //                     "Content-Type": "application/json", // let server know that body is a string of json
-        //                 },
-        //                 body: JSON.stringify({
-        //                     name: newName,
-        //                     poem: newPoem
-        //                 }),
-        //             })
-        //             .then((resp) => {
-        //                 console.log(resp);
-        //                 if (resp.redirected) {
-        //                     window.location.href = resp.url;
-        //                 }
-        //             })
-        //             .catch((err) => console.error(err));
-        //     };
-        // }
     </script>
 </body>
 

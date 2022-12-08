@@ -35,11 +35,14 @@ async function getPoem(req, res) {
 
   let userPoemMatch = false;
   let locals;
-  let renderString;
 
   try {
-      //id of clicked poem
+
+    //Dont know why the comment in function commentPoem is sent as query?
+    if (!req.query.comment) {
+            //id of clicked poem
   const poemId = req.params.id;
+  console.log('req params', req.params, 'req query', req.query)
 
   //id of logged in user
   const {userId} = req.session 
@@ -55,29 +58,26 @@ async function getPoem(req, res) {
 
   //render edit page if user who requests poem is the same as created the poem
   if (whoCreatedThePoem === userId) {
-    console.log('if')
+    console.log('this is your own poem')
       userPoemMatch = true;
       locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments, user: req.session.username}
-      // renderString = "readAndEditPoem"
       res.render("readAndEditPoem", locals)
   } else { //render read page if user who requests poem did not create it
-    console.log('else')
+    console.log('you didnt write this poem')
     userPoemMatch = false; 
     locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments, user: req.session.username}
-    renderString = "readPoem"
     res.render("readPoem", locals)
   }
+    } else {
+      console.log('ERROR')
+    }
 
   } catch (error) {
     console.log(error)
     res.render('home')
 } 
-
 }
-  // } finally {
-  //   console.log('does this happen?')
-  //   res.render(renderString, locals) 
-  // }
+
 
 //Get page create poem
 async function getCreatePoem(req, res) {
@@ -93,8 +93,6 @@ async function getCreatePoem(req, res) {
 
 async function updatePoem(req, res) {
   let q;
-  let msg;
-  let failOrSuccess;
 
   try {
     const id = req.params.id;
@@ -106,20 +104,14 @@ async function updatePoem(req, res) {
       { name, poem, visibility }
     );
 
-    failOrSuccess = "Success"
-    msg = "Successfully updated poem!";
     q = successUrlEncode("Successfully updated poem")
     res.redirect(`/poems/${id}/edited?${q}`);
 
 
   } catch(err) {
     console.error(err.message);
-    failOrSuccess = "Success"
-    msg = "Couldn't update poem, try again"
     q = failUrlEncode("Could not update poem")
     res.redirect(`/poems/${id}`);
-
-
   } 
 }
 
@@ -164,43 +156,49 @@ async function deletePoem(req, res) {
     res.redirect(`/poems?${q}`);
   }
 }
-async function commentPoem2(id, comment) {
-  return 
-}
 
 async function commentPoem(req, res) {
   let q;
 
   try {
-    
     const comment = req.body.comment
-    const poemId = ObjectId(req.body.id)
+    console.log('comment', comment)
+    const poemId = req.body.id
+    console.log(poemId)
     const postedBy = req.session.userId
 
     const commentDoc = new CommentModel({comment, poemId, postedBy})
+    // const commentsThatShowOnPage = await CommentModel.find({poemId: poemId})
+    // console.log('commentsthatshowonpage', commentsThatShowOnPage)
     
-    await commentDoc.save();
+    // const updatePoemComments = await PoemModel.updateOne({_id: ObjectId(poemId)}, {comments: commentsThatShowOnPage});
+    // const updatedComments = await commentDoc.save();
+    // console.log('updated poem comments', updatePoemComments)
 
-    console.log('The new comment', commentDoc)
+    // console.log('does this happen?')
+    // q = successUrlEncode("Successfully commented poem")
+    // // res.redirect(`/poems?${q}`)
+    // res.redirect(`/poems?${q}`)
 
-    const commentsThatShowOnPage = await CommentModel.find({poemId: poemId})
-    console.log(commentsThatShowOnPage)
+          // save comment
+      await commentDoc.save();
+          // get this particular post
+       const postRelated = await PoemModel.findById(poemId);
+          // push the comment into the post.comments array
+       postRelated.comments.push(commentDoc);
+          // save and redirect...
+       await postRelated.save()
 
-    const theCommentedPoem = await PoemModel.find({_id: poemId})
-    console.log('the commented poem', theCommentedPoem)
-
-    const result = await PoemModel.updateOne({_id: poemId}, {comments: commentsThatShowOnPage});
-    // const result = await PoemModel.updateOne({_id: poemId}, {$push: {"comments": commentDoc._id}});
-    console.log('result of poem model update one', result)
-    res.json({message: "hello"})
-
-    // q = new URLSearchParams({type: "success", message: "Successfully commented poem!"});
-    q = successUrlEncode("Successfully commented poem")
+       console.log('does this happen?')
+       q = successUrlEncode("Successfully commented poem")
+       res.redirect(`${poemId}/comment?${q}`)
+       // res.redirect(`/poems?${q}`)
+      //  res.redirect(`/poems/${poemId}?${q}`)
 
   } catch (err) {
     console.error(err.message);
     q = failUrlEncode("Couldn't comment, try again")
-
+    res.redirect(`/poems?${q}`)
   } 
 }
 
