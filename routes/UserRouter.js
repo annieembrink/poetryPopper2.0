@@ -4,6 +4,7 @@ import {ensureNotAuth, ensureAuth} from "../middleware/isAuth.js";
 
 const UserRouter = Router();
 
+// UserRouter.get("*", UserController.getHome);
 UserRouter.get("/", UserController.getHome);
 
 UserRouter.get("/login", ensureNotAuth, UserController.getLogin);

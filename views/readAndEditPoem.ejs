@@ -17,12 +17,12 @@
    
    
 
-    <button class="edit" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
+    <button id="editBtn" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
   </div>
 
-   <!-- Should appear after a poems wants to be edited -->
+   <!-- Should appear after a poem wants to be edited -->
    <form id="editForm" hidden>
-    <h2>Edit poem</h2>
+    <!-- <h2>Edit poem</h2> -->
     <div class="visibilityButtons">
       <input type="radio" name="visibility" id="public" value="public" >
       <label for="public">Public</label>
@@ -41,10 +41,12 @@
             const oldPoem = document.getElementById('thePoem')
             const oldName = document.getElementById('theTitle')
             const oldVisibility = document.getElementById('visibility').textContent
+            const editBtn = document.getElementById('editBtn')
             
             oldPoem.contentEditable = "true";
             oldPoem.focus()
             oldName.contentEditable = "true";
+            editBtn.hidden = true; 
 
             // Show edit form
             document.getElementById("editForm").hidden = false;
@@ -59,6 +61,8 @@
                 const newPoem = oldPoem.innerText
                 const newVisibility = editFormEl.elements.visibility.value
 
+                console.log(newVisibility.length)
+
                 // tip: use fetch
                 fetch(`/poems/${id}`, {
                         method: "PUT",
@@ -71,11 +75,11 @@
                             visibility: newVisibility
                         }),
                     })
-                    .then((resp) => {
-                        console.log(resp);
-                        if (resp.redirected) {
-                            window.location.href = resp.url;
-                        }
+                    .then(res => {
+                      console.log(res)
+                      if (res.redirected) {
+                        window.location.href = res.url;
+                       }
                     })
                     .catch((err) => console.error(err));
             };

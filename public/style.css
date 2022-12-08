@@ -193,9 +193,22 @@ input {
   outline: none;
 }
 
+#editedPoem {
+  min-height: 20%;
+  background-color: #BAAB68;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.visibilityButtons {
+  display: inline;
+}
+
 #thepoem {
   white-space: pre-line;
   text-align: left;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 button {

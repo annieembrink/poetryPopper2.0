@@ -7,36 +7,43 @@
 <body>
     <%- include('partials/serverMessage') %>
     <main>
-        <h1>Create poem</h1>
 
         <form id="addForm">
+
+            <h1>Create poem</h1>
             <div class="poemContent">
-                <input id="createTitle" type="text" placeholder="title" name="name" />
-                <input id="createpoem" type="text" placeholder="poem" name="poem" />
+                <input id="createTitle" type="text" placeholder="title" name="name" required/>
+                <input id="createpoem" type="text" placeholder="poem" name="poem" required/>
             </div>
         
             <button id="addForm" type="submit">Submit</button>
         </form>
 
-    <div id="textAreaDiv">
-        <textarea readonly id="editPoem"></textarea>
-    </div>
-        <div id="editedPoem"></div>
-        <div class="visibilityButtons">
-            <input type="radio" name="visibility" id="public" value="public">
-            <label for="public">Public</label>
-            <input type="radio" name="visibility" id="private" value="private">
-            <label for="private">Private</label>
-        </div>
-        <button onclick="tryagain()" >Delete and try again</button>
-        <button type="submit" onclick="newPoemValue()"><a href="/poems">Create poem</a></button>
+        <div id="editContainer" hidden>
+            <div class="visibilityButtons">
+                <input type="radio" name="visibility" id="public" value="public">
+                <label for="public">Public</label>
+                <input type="radio" name="visibility" id="private" value="private">
+                <label for="private">Private</label>
+            </div>
+                <div id="editedPoem"></div>
+                
+                <button onclick="tryagain()" >Delete and try again</button>
+                <button type="submit" onclick="newPoemValue()"><a href="/poems">Create poem</a></button>
 
+                <div id="textAreaDiv">
+                    <textarea readonly id="editPoem"></textarea>
+                </div>
+            </div>
+
+    
     </main>
 </body>
 
 <script>
     const createPoemForm = document.getElementById('addForm');
     const textAreaDiv = document.getElementById('textAreaDiv');
+    const editContainer = document.getElementById('editContainer')
     const inputTitle = document.getElementById('createTitle');
     const inputPoem = document.getElementById('createpoem');
     const editPoem = document.getElementById('editPoem');
@@ -46,12 +53,14 @@
     createPoemForm.addEventListener('submit', (e) => {
         e.preventDefault();
         createPoemForm.style.display = 'none';
+        editContainer.hidden = false; 
 
         const h2Tag = document.createElement('h2');
         h2Tag.innerText = inputTitle.value;
+        h2Tag.style.display = "inline";
         h2Tag.setAttribute('id', 'h2Title')
 
-        textAreaDiv.appendChild(h2Tag)
+        editContainer.prepend(h2Tag)
         editPoem.innerText = inputPoem.value;
     })
          

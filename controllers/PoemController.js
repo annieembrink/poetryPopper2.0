@@ -55,22 +55,29 @@ async function getPoem(req, res) {
 
   //render edit page if user who requests poem is the same as created the poem
   if (whoCreatedThePoem === userId) {
+    console.log('if')
       userPoemMatch = true;
       locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments, user: req.session.username}
-      renderString = "readAndEditPoem"
+      // renderString = "readAndEditPoem"
+      res.render("readAndEditPoem", locals)
   } else { //render read page if user who requests poem did not create it
+    console.log('else')
     userPoemMatch = false; 
     locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments, user: req.session.username}
     renderString = "readPoem"
+    res.render("readPoem", locals)
   }
 
   } catch (error) {
     console.log(error)
-
-  } finally {
-    res.render(renderString, locals) 
-  }
+    res.render('home')
 } 
+
+}
+  // } finally {
+  //   console.log('does this happen?')
+  //   res.render(renderString, locals) 
+  // }
 
 //Get page create poem
 async function getCreatePoem(req, res) {
@@ -85,8 +92,9 @@ async function getCreatePoem(req, res) {
 }
 
 async function updatePoem(req, res) {
-
   let q;
+  let msg;
+  let failOrSuccess;
 
   try {
     const id = req.params.id;
@@ -97,14 +105,23 @@ async function updatePoem(req, res) {
       { _id: ObjectId(id) },
       { name, poem, visibility }
     );
-    q = successUrlEncode("Successfully updated poem!");
+
+    failOrSuccess = "Success"
+    msg = "Successfully updated poem!";
+    q = successUrlEncode("Successfully updated poem")
+
 
   } catch(err) {
     console.error(err.message);
-    q = failUrlEncode("Couldn't update poem, try again")
+    failOrSuccess = "Success"
+    msg = "Couldn't update poem, try again"
+    q = failUrlEncode("Could not update poem")
+
+
   } finally {
     const backURL = req.header('Referer') || '/';
-    res.redirect(`/${backURL}?${q}`);
+    console.log(backURL)
+    res.redirect(`/poems?${q}`);
   }
 }
 
