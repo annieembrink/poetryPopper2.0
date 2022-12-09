@@ -13,10 +13,9 @@
             <% for(let i = 0; i < userPoems.length; i++) { %>
             <li class="marginTopBottom10" id="poemLi">
 
-                <div id="poemDiv">
-                    <span><%= userPoems[i].name %></span>
-                    <!-- <b><%= userPoems[i].poem %></b> -->
-                    <small>by you</small>
+                <div id="poemDiv" class="width80">
+                    <span><%= userPoems[i].name %>, </span>
+                    <span class="fontsize"><%=userPoems[i].visibility%></span>
                 </div>
                 <div id="iconDiv">
                     <!-- <i class="fas fa-sharp fa-solid fa-pen edit"

@@ -4,7 +4,7 @@ import {ensureAuth} from "../middleware/isAuth.js";
 
 const PoemRouter = Router();
 
-PoemRouter.get("/poems", PoemController.getAllPoems);
+PoemRouter.get("/poems", ensureAuth, PoemController.getAllPoems);
 PoemRouter.get("/poems/added", ensureAuth, PoemController.getAllPoems);
 
 PoemRouter.post("/poems/:id", ensureAuth, PoemController.commentPoem);
@@ -20,6 +20,5 @@ PoemRouter.get("/notfound", ensureAuth, PoemController.notFound);
 PoemRouter.get("/createpoem", ensureAuth, PoemController.getCreatePoem)
 PoemRouter.post("/createpoem", ensureAuth, PoemController.addPoem);
 
-// PoemRouter.post("/newpoem", ensureAuth, (req, res) => {res.json(req.body)});
 
 export default PoemRouter;

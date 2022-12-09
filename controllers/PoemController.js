@@ -39,7 +39,8 @@ async function getYourWork(req, res) {
     const {userId} = req.session 
 
     //Find them in db
-    const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
+    // const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
+    const userPoems = await PoemModel.find({postedBy: userId}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
     const locals = { userPoems, serverMessage: req.query, pageTitle: "Your work", isAuth: req.session.isAuth, user: req.session.username };
     // console.log('get all poems', req.query)

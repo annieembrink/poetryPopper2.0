@@ -5,8 +5,26 @@ import { successUrlEncode, failUrlEncode } from "../utils.js";
 import bcrypt from 'bcryptjs';
 
 async function getHome(req, res) {
+
+  //get all public poems to display on home page
     const publicPoems = await PoemModel.find({visibility: 'public'}).populate('postedBy', 'username').exec();
+    let threeRandomPoems = [];
+
+     let i = 0;
+     while(threeRandomPoems.length < 3) {
+      i++
+      publicPoems[i] = publicPoems[Math.floor(Math.random() * publicPoems.length)]
+      let oneRandomPoem = publicPoems[i]
+      let condition = threeRandomPoems.find(poem => poem.id === oneRandomPoem.id)
+      if (!condition) {
+        threeRandomPoems.push(oneRandomPoem)
+      } 
+     }
+
+     console.log(threeRandomPoems)
+
     res.render("home", {
+      threeRandomPoems: threeRandomPoems,
       serverMessage: req.query,
       pageTitle: "Home",
       isAuth: req.session.isAuth,

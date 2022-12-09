@@ -11,7 +11,7 @@
         <ul>
             <% for(let i = 0; i < publicPoems.length; i++) { %>
             <li class="marginTopBottom10" id="poemLi">
-                <div id="poemDiv">
+                <div id="poemDiv" class="width80">
                     <span><%= publicPoems[i].name %></span>
                     <small>by, <%= publicPoems[i].postedBy?.username %></small>
                 </div>

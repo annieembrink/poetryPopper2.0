@@ -11,8 +11,15 @@
       The Poetry Popper uses the cut-up technique, a literary technique in which a written text is cut up and rearranged to create a new text. The concept can be traced to the Dadaists of the 1920s, but it was developed and popularized in the 1950s and early 1960s, especially by writer William S. Burroughs. It has since been used in a wide variety of contexts.
     </p>
 
-    <div class="displayFlex">
-        <button class="width80 marginTop30 marginBottom30 bg-green" ><a href="/poems">Have a look at some of the poems created with Poetry Popper</a></button>
+    <p class="width80 alignCenter marginAuto marginTop30 marginBottom30">Have a look at some of the poems created with Poetry Popper</p>
+  
+    <div>
+        <%for (let i = 0; i < threeRandomPoems.length; i++) {%>
+          <div class="marginBottom30 width80 marginAuto">
+          <p><%=threeRandomPoems[i].name%></p>
+          <p><%=threeRandomPoems[i].poem%></p>
+        </div>
+        <%}%>
     </div>
 
     <small class="displayBlock alignCenter marginTopBottom10">Want more of this? <a class="text-decoration-default" href="/register">Create free account today</a></small>
