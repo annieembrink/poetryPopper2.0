@@ -7,26 +7,55 @@ import { fail } from "assert";
 
 //Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
+  console.log('req query', req.query)
+  let userPoemMatch = false;
 
-    if(req.query.message) {
+    if(req.query.message || Object.keys(req.query).length === 0) {
     //Find all public poems and populate username
     const publicPoems = await PoemModel.find({visibility: 'public'}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
     //We need id of auth and logged in user to display their own poems
     const {userId} = req.session 
 
-    //Find them in db
-    const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
+    for (let i = 0; i < publicPoems.length; i++) {
+      const poem = publicPoems[i];
+           //Find who created that poem
+    const whoCreatedThePoem = poem.postedBy._id.valueOf();
+    console.log(whoCreatedThePoem)
 
-    const locals = { publicPoems, userPoems, serverMessage: req.query, pageTitle: "Poems", isAuth: req.session.isAuth, user: req.session.username };
+    if (whoCreatedThePoem === userId) {
+      poem.userPoemMatch = true; 
+    } else {
+      poem.userPoemMatch = false; 
+    }
+    }
+
+    const locals = { publicPoems, serverMessage: req.query, pageTitle: "Community", isAuth: req.session.isAuth, user: req.session.username, userPoemMatch };
     // console.log('get all poems', req.query)
     res.render("poems", locals);
     }
 
 }
+async function getYourWork(req, res) {
+    //We need id of auth and logged in user to display their own poems
+    const {userId} = req.session 
+
+    //Find them in db
+    const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
+
+    const locals = { userPoems, serverMessage: req.query, pageTitle: "Your work", isAuth: req.session.isAuth, user: req.session.username };
+    // console.log('get all poems', req.query)
+    res.render("yourWork", locals);
+}
+async function notFound(req, res) {
+    const locals = { serverMessage: req.query, pageTitle: "Page not found", isAuth: req.session.isAuth, user: req.session.username };
+    res.render("notFound", locals);
+}
 
 //Get requested poem, open one specific poem to read
 async function getPoem(req, res) {
+
+  // console.log('req query', req.query)
 
   let userPoemMatch = false;
   let locals;
@@ -37,7 +66,7 @@ async function getPoem(req, res) {
     if (!req.query.comment) {
             //id of clicked poem
   const poemId = req.params.id;
-  console.log('req params', req.params, 'req query', req.query)
+  // console.log('req params', req.params, 'req query', req.query)
 
   //id of logged in user
   const {userId} = req.session 
@@ -189,6 +218,8 @@ async function commentPoem(req, res) {
 export default {
   getAllPoems,
   getPoem,
+  notFound,
+  getYourWork,
   getCreatePoem,
   updatePoem,
   addPoem,

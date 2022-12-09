@@ -7,32 +7,33 @@
 <body>
     <%- include('partials/serverMessage') %>
     <main>
-        <h2 class="marginBottom30">Public poems</h2>
+
+        <h2 class="marginBottom30">Your Poems</h2>
         <ul>
-            <% for(let i = 0; i < publicPoems.length; i++) { %>
+            <% for(let i = 0; i < userPoems.length; i++) { %>
             <li class="marginTopBottom10" id="poemLi">
+
                 <div id="poemDiv">
-                    <span><%= publicPoems[i].name %></span>
-                    <!-- <b><%= publicPoems[i].poem %></b> -->
-                    <small>by, <%= publicPoems[i].postedBy?.username %></small>
+                    <span><%= userPoems[i].name %></span>
+                    <!-- <b><%= userPoems[i].poem %></b> -->
+                    <small>by you</small>
                 </div>
                 <div id="iconDiv">
-                    <!-- <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit('<%= publicPoems[i]._id %>', '<%= publicPoems[i].name %>', '<%= publicPoems[i].poem %>')"></i> -->
-                    <% if (publicPoems[i].userPoemMatch)  {%>
-                    <i class="fas fa-solid fa-trash delete" onclick="handleDelete('<%= publicPoems[i]._id %>')"></i>
-                    <%}%>
+                    <!-- <i class="fas fa-sharp fa-solid fa-pen edit"
+                        onclick="handleEdit('<%= userPoems[i]._id %>', '<%= userPoems[i].name %>', '<%= userPoems[i].poem %>')"></i> -->
+                    <i class="fas fa-solid fa-trash delete" onclick="handleDelete('<%= userPoems[i]._id %>')"></i>
 
-                    <%console.log('match?', publicPoems[i].userPoemMatch)%>
-
-                    <a href="/poems/<%=publicPoems[i]._id%>">
-                        <i class="fas fa-solid fa-book-open read" onclick="readPoem('<%= publicPoems[i]._id %>')"></i>
+                    <a href="/poems/<%=userPoems[i]._id%>">
+                        <i class="fas fa-solid fa-book-open read" onclick="readPoem('<%= userPoems[i]._id %>')"></i>
                     </a>
+
                 </div>
             </li>
             <% } %>
         </ul>
-
+    
     </main>
+
     <script>
         function handleDelete(id) {
             console.log("Delete was triggered with id", id);
@@ -66,5 +67,3 @@
 
     </script>
 </body>
-
-</html>

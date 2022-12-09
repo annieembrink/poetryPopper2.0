@@ -9,6 +9,12 @@
 .marginAuto {
   margin: auto;
 }
+.marginTopBottom10 {
+  margin: 10px 0;
+}
+.marginBottom30 {
+  margin: 30px 0;
+}
 .alignCenter {
   text-align: center;
 }

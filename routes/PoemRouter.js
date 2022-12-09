@@ -14,6 +14,8 @@ PoemRouter.delete("/poems/:id", ensureAuth, PoemController.deletePoem);
 
 PoemRouter.get("/poems/:id/edited", ensureAuth, PoemController.getPoem);
 PoemRouter.get("/poems/:id/comment", ensureAuth, PoemController.getPoem);
+PoemRouter.get("/yourwork", ensureAuth, PoemController.getYourWork);
+PoemRouter.get("/notfound", ensureAuth, PoemController.notFound);
 
 PoemRouter.get("/createpoem", ensureAuth, PoemController.getCreatePoem)
 PoemRouter.post("/createpoem", ensureAuth, PoemController.addPoem);
