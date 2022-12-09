@@ -27,7 +27,13 @@
             </li>
             <% } %>
         </ul>
-
+        <%if(!isAuth) {%>
+            <div id="loginOrReg">
+                <small class="displayBlock alignCenter marginTopBottom10">Want more of this? <a href="/register">Create free account today</a></small>
+                <small class="displayBlock alignCenter">Already a user? <a href="/login">Sign in</a></small>
+            </div>
+       <% } %>
+   
     </main>
     <script>
         function handleDelete(id) {
