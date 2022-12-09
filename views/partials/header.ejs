@@ -15,7 +15,7 @@
 
       <div id="headerContent">
       <h1>Poetry Popper</h1>
-      <i onclick="menuOnClick()" class="fas fa-solid fa-bars"></i>
+      <i id="menuIcon" onclick="menuOnClick()" class="fas fa-solid fa-bars"></i>
     </div>
     </header>
 
@@ -24,10 +24,15 @@
     <script>
       function menuOnClick() {
         const navDiv = document.getElementById('navDiv');
+        const menuIcon = document.getElementById('menuIcon');
         if (navDiv.hidden) {
           navDiv.hidden = false;
+          menuIcon.classList = ""
+          menuIcon.innerText = "X";
         } else {
           navDiv.hidden = true;
+          menuIcon.classList = "fas fa-solid fa-bars";
+          menuIcon.innerText = "";
         }
       }
     </script>

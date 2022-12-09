@@ -5,15 +5,15 @@
   <body>
     <%- include('partials/serverMessage') %>
     <main>
-      <h5>Get inspired by others and create great new art!</h5>
+      <h3 class="width80 marginAuto alignCenter marginBottom30 marginTop30">Get inspired by others and create great new art!</h3>
 
-    <p id="about">
+    <p class="marginAuto width80 alignCenter" id="about">
       The Poetry Popper uses the cut-up technique, a literary technique in which a written text is cut up and rearranged to create a new text. The concept can be traced to the Dadaists of the 1920s, but it was developed and popularized in the 1950s and early 1960s, especially by writer William S. Burroughs. It has since been used in a wide variety of contexts.
     </p>
 
     <div>
-        <h5>Some of the poems created with Poetry Popper</h5>
-        <ul id="homePoems">
+        <h3 class="width80 marginAuto alignCenter marginBottom30 marginTop30">Some of the poems created with Poetry Popper</h3>
+        <ul class="width80 marginAuto" id="homePoems">
           <% for(let i = 0; i < poems.length; i++) { %>
           <li class="homePoem">
             <p><%= poems[i].name %>, <small>by <%= poems[i].postedBy?.username %></small></p>
@@ -23,8 +23,8 @@
         </ul>
     </div>
 
-    <small>Want more of this? <a href="/register">Create free account today</a></small>
-    <small>Already a user? <a href="/login">Sign in</a></small>
+    <small class="displayBlock alignCenter marginTopBottom10">Want more of this? <a href="/register">Create free account today</a></small>
+    <small class="displayBlock alignCenter">Already a user? <a href="/login">Sign in</a></small>
 
   </main>
   </body>

@@ -13,16 +13,12 @@
             <li class="marginTopBottom10" id="poemLi">
                 <div id="poemDiv">
                     <span><%= publicPoems[i].name %></span>
-                    <!-- <b><%= publicPoems[i].poem %></b> -->
                     <small>by, <%= publicPoems[i].postedBy?.username %></small>
                 </div>
                 <div id="iconDiv">
-                    <!-- <i class="fas fa-sharp fa-solid fa-pen edit" onclick="handleEdit('<%= publicPoems[i]._id %>', '<%= publicPoems[i].name %>', '<%= publicPoems[i].poem %>')"></i> -->
                     <% if (publicPoems[i].userPoemMatch)  {%>
-                    <i class="fas fa-solid fa-trash delete" onclick="handleDelete('<%= publicPoems[i]._id %>')"></i>
+                    <i class="fas fa-solid fa-trash" onclick="handleDelete('<%= publicPoems[i]._id %>')"></i>
                     <%}%>
-
-                    <%console.log('match?', publicPoems[i].userPoemMatch)%>
 
                     <a href="/poems/<%=publicPoems[i]._id%>">
                         <i class="fas fa-solid fa-book-open read" onclick="readPoem('<%= publicPoems[i]._id %>')"></i>

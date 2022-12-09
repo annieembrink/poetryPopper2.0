@@ -1,9 +1,7 @@
 import PoemModel from "../models/PoemModel.js";
 import CommentModel from "../models/CommentModel.js";
 import { successUrlEncode, failUrlEncode } from "../utils.js";
-// import qs from "querystring";
 import { ObjectId } from "mongodb";
-import { fail } from "assert";
 
 //Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
