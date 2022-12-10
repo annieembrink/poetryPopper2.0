@@ -35,7 +35,7 @@
                 <label for="private">Private</label>
             </div>
             <h4 class="marginTop30">4. This is where you will see your poem during creation</h4>
-                <textarea id="editedPoem"></textarea>
+                <textarea class="marginTopBottom10" id="editedPoem"></textarea>
                 <!-- <div id="editedPoem"></div> -->
 
                 <h4 class="marginTop30">5. This is the lyrics you pasted before. Just mark words or sentences and they will be displayed in the field above - it's your new poem!</h4>
@@ -95,20 +95,15 @@
         const activeTextarea = document.activeElement;
         const selection = activeTextarea.value.substring(
             activeTextarea.selectionStart, activeTextarea.selectionEnd)
-        console.log(selection)
 
-        // editedPoem.innerText = `${selection.trim()}`
-        editedPoem.value += `${selection.trim()}\n`
+        if (selection.length > 1) {
+            editedPoem.value += `${selection.trim()}\n`
+        }
 
-        // editedPoem.innerText.append(`${selection.trim()}`)
-
-        // const pTag = document.createElement('p');
-        // pTag.innerText = `${selection.trim()}`
-        // editedPoem.appendChild(pTag)
     }
 
     function tryagain() {
-        editedPoem.innerHTML = "";
+        editedPoem.value = "";
     }
 
     function newPoemValue() {

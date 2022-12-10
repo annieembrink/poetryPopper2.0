@@ -50,6 +50,10 @@
   text-decoration: underline;
 }
 
+.whitespace {
+  white-space: pre-line;
+}
+
 #h2Title {
   background-color: #BAAB68;
   padding: 5px;
@@ -235,6 +239,8 @@ input {
 #editPoem {
   border: none;
   font-size: 1.5rem;
+  line-height: 2.5;
+  word-spacing: 10px;
 
   width: 100%;
   padding: 5px;
@@ -243,7 +249,7 @@ input {
   resize: none;
 }
 
-#createpoem {
+#createpoem, #editedPoem {
   width: 100%;
   padding: 5px;
   height: 20vh;
