@@ -14,33 +14,38 @@
             <h4>1. Choose the title of your poem</h4>
             <div class="poemContent">
                 <input id="createTitle" type="text" placeholder="title" name="name" required/>
-            <h4 class="marginTop30">2. Paste one of your favourite lyrics in the poem field or click to choose one of the suggested lyrics below</h4>
+            <h4 class="marginTop30">2. Just paste one of your favourite lyrics in the field below (or click the buttons to choose one of the suggested lyrics)</h4>
             <button value="river" onclick="getLyric(value)">River, by Joni Mitchel</button>
             <button value="blank space" onclick="getLyric(value)">Blank space, by Taylor Swift</button>
             <button value="hallelujah" onclick="getLyric(value)">Hallelujah, by Leonard Cohen</button>
             <button value="love will tear us apart" onclick="getLyric(value)">Love will tear us apart, by Joy division</button>
 
-                <input id="createpoem" type="text" placeholder="poem" name="poem" required/>
+                <!-- <input id="createpoem" type="text" placeholder="poem" name="poem" required/> -->
             </div>
-        
-            <button id="addForm" type="submit">Let's start creating!</button>
         </form>
+        <textarea class="marginTop30" form="addForm" name="poem" id="createpoem" cols="30" rows="10" placeholder="paste the lyrics here" required></textarea>
+        <button id="startCreateBtn" form="addForm" type="submit">Let's start creating!</button>
 
         <div id="editContainer" hidden>
+            <h4 class="marginTop30">3. choose if you want your poem to be visible for everyone or just yourself (you can change this later)</h4>
             <div class="visibilityButtons">
                 <input type="radio" name="visibility" id="public" value="public">
                 <label for="public">Public</label>
                 <input type="radio" name="visibility" id="private" value="private">
                 <label for="private">Private</label>
             </div>
-                <div id="editedPoem"></div>
-                
-                <button onclick="tryagain()" >Delete and try again</button>
-                <button type="submit" onclick="newPoemValue()"><a href="/poems">Create poem</a></button>
+            <h4 class="marginTop30">4. This is where you will see your poem during creation</h4>
+                <textarea id="editedPoem"></textarea>
+                <!-- <div id="editedPoem"></div> -->
 
+                <h4 class="marginTop30">5. This is the lyrics you pasted before. Just mark words or sentences and they will be displayed in the field above - it's your new poem!</h4>
                 <div id="textAreaDiv" class="marginTop30">
                     <textarea readonly id="editPoem"></textarea>
                 </div>
+
+                <h4 class="marginTop30">6. Just submit when you're done (you can edit and delete your poem later) or start all over again. </h4>
+                <button onclick="tryagain()" >Delete and try again</button>
+                <button type="submit" onclick="newPoemValue()"><a href="/poems">Create poem</a></button>
             </div>
 
     
@@ -50,6 +55,7 @@
 <script>
     const createPoemForm = document.getElementById('addForm');
     const textAreaDiv = document.getElementById('textAreaDiv');
+    const startCreateBtn = document.getElementById('startCreateBtn');
     const editContainer = document.getElementById('editContainer')
     const inputTitle = document.getElementById('createTitle');
     const inputPoem = document.getElementById('createpoem');
@@ -63,22 +69,23 @@
     .then(data => {
         let chosenSong = data.filter(song => song.title === str)
         chosenSong.map(info => {
-            inputPoem.value = info.lyrics
+            inputPoem.innerText = info.lyrics
         })
     })
     }
     createPoemForm.addEventListener('submit', (e) => {
         e.preventDefault();
         createPoemForm.style.display = 'none';
+        inputPoem.style.display = 'none';
+        startCreateBtn.style.display = 'none';
         editContainer.hidden = false; 
 
         const h2Tag = document.createElement('h2');
         h2Tag.innerText = inputTitle.value.trim();
-        h2Tag.style.display = "inline";
         h2Tag.setAttribute('id', 'h2Title')
 
         editContainer.prepend(h2Tag)
-        editPoem.innerText = inputPoem.value;
+        editPoem.innerText = inputPoem.innerText;
     })
          
 
@@ -89,9 +96,15 @@
         const selection = activeTextarea.value.substring(
             activeTextarea.selectionStart, activeTextarea.selectionEnd)
         console.log(selection)
-        const pTag = document.createElement('p');
-        pTag.innerText = `${selection.trim()}`
-        editedPoem.appendChild(pTag)
+
+        // editedPoem.innerText = `${selection.trim()}`
+        editedPoem.value += `${selection.trim()}\n`
+
+        // editedPoem.innerText.append(`${selection.trim()}`)
+
+        // const pTag = document.createElement('p');
+        // pTag.innerText = `${selection.trim()}`
+        // editedPoem.appendChild(pTag)
     }
 
     function tryagain() {
@@ -117,7 +130,7 @@
             headers: {
               "Content-Type": "application/json", // let server know that body is a string of json
             },
-            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.innerText, visibility: visibilityValue}),
+            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.value, visibility: visibilityValue}),
           })
           .then((res) => {
                     console.log(res);
