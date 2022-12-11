@@ -1,10 +1,12 @@
 <html lang="en">
-  <head>
-    <%- include('partials/header') %>
-  </head>
-  <body>
-    <%- include('partials/serverMessage') %>
-    <main>
+
+<head>
+  <%- include('partials/header') %>
+</head>
+
+<body>
+  <%- include('partials/serverMessage') %>
+  <main>
     <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
     <!-- <div id="thepoem"></div> -->
     <pre id="thePoem">
@@ -18,40 +20,47 @@
     </form>
 
     <% for(let i = 0; i < comments.length; i++) { %>
-      <div class="commentDiv">
-        <p class="commentPostedBy">By <%=comments[i].postedBy?.username%>: </p>
+    <div class="commentDiv">
+      <%if(comments[i].postedBy?.username) {%>
+      <p class="commentPostedBy"><%=comments[i].postedBy?.username%> commented: </p>
+      <%} else {%>
+      <p class="commentPostedBy">Anonymous commented: </p>
+      <%}%>
           <small class="comment"><%= comments[i].comment %></small>
-      </div>
-  <% } %>
+    </div>
+    <% } %>
 
   </main>
 
   <script>
-
-    document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg, "");
+    document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg,
+      "");
     const comment = document.getElementById('commentTextArea');
     console.log(comment)
 
     function postComment(id) {
 
       fetch(`/poems/${id}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json", // let server know that body is a string of json
-            },
-            body: JSON.stringify({ comment: comment.value, id: id }),
-          })
-          .then((res) => {
-                      console.log('response', res)
-                      if (res.redirected) {
-                        window.location.href = res.url;
-                        console.log('was redirected')
-                       }
-                    })
-            .catch((err) => console.error(err));
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // let server know that body is a string of json
+          },
+          body: JSON.stringify({
+            comment: comment.value,
+            id: id
+          }),
+        })
+        .then((res) => {
+          console.log('response', res)
+          if (res.redirected) {
+            window.location.href = res.url;
+            console.log('was redirected')
+          }
+        })
+        .catch((err) => console.error(err));
     }
-
   </script>
 
-  </body>
+</body>
+
 </html>

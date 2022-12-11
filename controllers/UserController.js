@@ -4,7 +4,6 @@ import CommentModel from "../models/CommentModel.js";
 import { ObjectId } from "mongodb";
 import { successUrlEncode, failUrlEncode } from "../utils.js";
 import bcrypt from 'bcryptjs';
-import { userInfo } from "os";
 
 async function getHome(req, res) {
 

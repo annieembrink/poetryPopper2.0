@@ -17,7 +17,8 @@ async function getAllPoems(req, res) {
 
     for (let i = 0; i < publicPoems.length; i++) {
       const poem = publicPoems[i];
-           //Find who created that poem
+      //Find who created that poem
+  if(poem.postedBy) {
     const whoCreatedThePoem = poem.postedBy._id.valueOf();
     console.log(whoCreatedThePoem)
 
@@ -26,6 +27,9 @@ async function getAllPoems(req, res) {
     } else {
       poem.userPoemMatch = false; 
     }
+  } else {
+    poem.userPoemMatch = false; 
+  }
     }
 
     const locals = { publicPoems, serverMessage: req.query, pageTitle: "Community", isAuth: req.session.isAuth, user: req.session.username, userPoemMatch };
