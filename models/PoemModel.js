@@ -37,6 +37,11 @@ const poemSchema = new mongoose.Schema(
   {timestamps: true}
 );
 
+poemSchema.pre('findOneAndUpdate', function (next) {
+  this.options.runValidators = true
+  next()
+})
+
 const PoemModel = mongoose.model("Poem", poemSchema);
 
 export default PoemModel;

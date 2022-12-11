@@ -45,6 +45,7 @@
         function updateUser(id) {
 
             changeUserForm.onsubmit = (e) => {
+                e.preventDefault()
             const changeUsername = document.getElementById('changeUsername').value
             const newPassword = document.getElementById('newpw').value
             const oldPassword = document.getElementById('oldpw').value

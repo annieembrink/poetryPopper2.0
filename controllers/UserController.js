@@ -46,6 +46,7 @@ async function getHome(req, res) {
   async function getAccount(req, res) {
     let locals;
     try {
+      console.log(req.query, req.params)
       locals = {serverMessage: req.query, pageTitle: "Your account", isAuth: req.session.isAuth, userId: req.session.userId, user: req.session.username || null}
     } catch (error) {
       console.log(error)
@@ -59,30 +60,32 @@ async function getHome(req, res) {
       const {username, oldPassword, newPassword, id} = req.body; 
       console.log('req.body', req.body)
 
-      const user = await UserModel.findOne({_id: ObjectId(id)});
+      const user = await UserModel.findOne({_id: ObjectId(id)})
 
       const match = bcrypt.compareSync(oldPassword, user.password);
       console.log('match', match)
 
+      const userDoc = new UserModel({ username, password: newPassword});
+      await userDoc.validate();
+
       if(match) {
         let hashedpw = bcrypt.hashSync(newPassword, 10)
-        let test= await UserModel.findOneAndUpdate(
+        await UserModel.findOneAndUpdate(
           { _id: ObjectId(id) },
-          { username, password: hashedpw }
+          { username, password: hashedpw}
         );
-        console.log(test)
       q = successUrlEncode("successfully updated account")  
+      res.redirect(`/account/?${req.body.id}/success?${q}`)
 
       } else {
         q = failUrlEncode("couldn't update account, try again")
+        res.redirect(`/account/?${req.body.id}/error?${q}`)
       }
 
     } catch (error) {
       console.log(error)
       q = failUrlEncode("couldn't update account, try again")
-
-    } finally {
-      res.redirect(`/login?${q}`)
+      res.redirect(`/account/?${req.body.id}/error?${q}`)
     }
   }
 

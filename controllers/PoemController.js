@@ -125,20 +125,23 @@ async function updatePoem(req, res) {
     const id = req.params.id;
 
     const { name, poem, visibility}  = req.body;
+
+
     
-    await PoemModel.updateOne(
+    await PoemModel.findOneAndUpdate(
       { _id: ObjectId(id) },
       { name, poem, visibility }
     );
 
+    
     q = successUrlEncode("Successfully updated poem")
     res.redirect(`/poems/${id}/edited?${q}`);
 
 
   } catch(err) {
-    console.error(err.message);
-    q = failUrlEncode("Could not update poem")
-    res.redirect(`/poems/${id}`);
+    console.error('catch', err.message);
+    q = failUrlEncode("Could not update poem, try again")
+    res.redirect(`/poems/?${q}`);
   } 
 }
 

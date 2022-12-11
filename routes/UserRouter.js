@@ -10,6 +10,8 @@ UserRouter.get("/", UserController.getHome);
 UserRouter.get("/account", ensureAuth, UserController.getAccount);
 UserRouter.delete("/account/:id/deleted", ensureAuth, UserController.deleteAccount);
 UserRouter.put("/account/:id/updated", ensureAuth, UserController.changeAccount);
+UserRouter.get("/account/:id/error", ensureAuth, UserController.getAccount);
+UserRouter.get("/account/:id/success", ensureAuth, UserController.getAccount);
 
 UserRouter.get("/login", ensureNotAuth, UserController.getLogin);
 UserRouter.post("/login", ensureNotAuth, UserController.login);

@@ -30,6 +30,17 @@
     <button type="submit">Save Change</button>
 </form>
 
+<% for(let i = 0; i < comments.length; i++) { %>
+  <div class="commentDiv">
+    <%if(comments[i].postedBy?.username) {%>
+    <p class="commentPostedBy"><%=comments[i].postedBy?.username%> commented: </p>
+    <%} else {%>
+    <p class="commentPostedBy">Anonymous commented: </p>
+    <%}%>
+        <small class="comment"><%= comments[i].comment %></small>
+  </div>
+  <% } %>
+
 
 
   </main>
