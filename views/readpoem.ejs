@@ -7,9 +7,9 @@
     <main>
     <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
     <!-- <div id="thepoem"></div> -->
-    <p class="whitespace">
+    <pre id="thePoem">
       <%=poem.poem%>
-    </p>
+    </pre>
 
     <p class="marginTop30">Leave a nice comment!</p>
     <form>
@@ -19,8 +19,8 @@
 
     <% for(let i = 0; i < comments.length; i++) { %>
       <div class="commentDiv">
-        <p class="commentPostedBy">Comment by, <%=comments[i].postedBy?.username%>: </p>
-          <p class="comment"><%= comments[i].comment %></p>
+        <p class="commentPostedBy">By <%=comments[i].postedBy?.username%>: </p>
+          <small class="comment"><%= comments[i].comment %></small>
       </div>
   <% } %>
 
@@ -28,6 +28,7 @@
 
   <script>
 
+    document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg, "");
     const comment = document.getElementById('commentTextArea');
     console.log(comment)
 

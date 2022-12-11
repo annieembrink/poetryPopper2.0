@@ -16,7 +16,8 @@ if (!process.env.MONGO_CONNECTION_STR) {
 const uri = process.env.MONGO_CONNECTION_STR;
 mongoose.connect(uri);
 
-const poemSchema = {
+const poemSchema = new mongoose.Schema(
+  {
   name: {
     type: String,
     required: "must be filled in",
@@ -32,7 +33,9 @@ const poemSchema = {
   },
   postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
-};
+},
+  {timestamps: true}
+);
 
 const PoemModel = mongoose.model("Poem", poemSchema);
 

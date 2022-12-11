@@ -5,19 +5,20 @@
   <body>
     <%- include('partials/serverMessage') %>
     <main>
-      <h3 class="width80 marginAuto marginBottom30 ">Get inspired by others and create great new art!</h3>
+      <h3 class="width80 marginBottom30 ">Get inspired by others and create great new art!</h3>
 
-    <p class="marginAuto width80" id="about">
+    <p class= "width80" id="about">
       The Poetry Popper uses the cut-up technique, a literary technique in which a written text is cut up and rearranged to create a new text. The concept can be traced to the Dadaists of the 1920s, but it was developed and popularized in the 1950s and early 1960s, especially by writer William S. Burroughs. It has since been used in a wide variety of contexts.
     </p>
 
-    <p class="width80 marginAuto marginTop30 marginBottom30">Have a look at some of the poems created with Poetry Popper</p>
+    <%if(!isAuth) {%>
+    <p class="width80 marginTop30 marginBottom30">Have a look at some of the poems created with Poetry Popper</p>
   
     <div>
         <%for (let i = 0; i < threeRandomPoems.length; i++) {%>
-          <div class="width80 marginAuto whitespace">
-          <h4><%=threeRandomPoems[i].name%></h4>
-          <p><%=threeRandomPoems[i].poem%></p>
+          <div class="width80">
+          <h4 class="marginTop30"><%=threeRandomPoems[i].name%></h4>
+          <pre><%=threeRandomPoems[i].poem%></pre>
           <small>by, <%=threeRandomPoems[i].postedBy?.username%></small>
         </div>
         <%}%>
@@ -25,6 +26,7 @@
 
     <small class="displayBlock marginTopBottom10">Want more of this? <a class="text-decoration-default" href="/register">Create free account today</a></small>
     <small class="displayBlock">Already a user? <a class="text-decoration-default" href="/login">Sign in</a></small>
+  <%}%>
 
   </main>
   </body>

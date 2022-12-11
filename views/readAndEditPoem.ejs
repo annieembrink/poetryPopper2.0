@@ -5,19 +5,17 @@
   <body>
     <%- include('partials/serverMessage') %>
     <main>
-    <h2>
-      <span id="theTitle"><%=poem.name%>,</span>
+    <h4>
+      <span id="theTitle"><%=poem.name%></span><br>
       <small>by <%=poem.postedBy?.username%> (<small id="visibility"><%=poem.visibility%></small>)</small>
 
-    </h2>
+    </h4><br>
     <div id="poemDiv">
-    <p id="thePoem">
+    <pre id="thePoem">
       <%=poem.poem%>
-    </p>
+    </pre>
    
-   
-
-    <button id="editBtn" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
+    <button class="marginTop30" id="editBtn" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
   </div>
 
    <!-- Should appear after a poem wants to be edited -->
@@ -36,6 +34,10 @@
 
   </main>
   <script>
+
+        //erase first line of whitespace
+        document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg, "");
+
        function handleEdit(id) {
             const editFormEl = document.getElementById("editForm");
             const oldPoem = document.getElementById('thePoem')

@@ -21,8 +21,6 @@ async function getHome(req, res) {
       } 
      }
 
-     console.log(threeRandomPoems)
-
     res.render("home", {
       threeRandomPoems: threeRandomPoems,
       serverMessage: req.query,
@@ -54,16 +52,20 @@ async function getHome(req, res) {
   
       const user = await UserModel.findOne({ username: username });
   
-      await user.comparePassword(password, user.password);
+      const match = bcrypt.compareSync(password, user.password);
+      console.log('match', match)
   
-      req.session.isAuth = true;
-      req.session.userId = user._id;
-      req.session.username = req.body.username
-
-      url = "poems"
-
-      q = successUrlEncode("Successfully logged in");
-
+      if(match) {
+        req.session.isAuth = true;
+        req.session.userId = user._id;
+        req.session.username = req.body.username
+        url = "poems"
+        q = successUrlEncode("Successfully logged in");
+      } else {
+        q = failUrlEncode("Something went wrong, try again");
+        url = "login"
+      }
+ 
     } catch (err) {
       console.error('catch', err.message);
       q = failUrlEncode("Something went wrong, try again");
@@ -92,27 +94,25 @@ async function getHome(req, res) {
 
      const { username, password } = req.body;
 
-     const user = await UserModel.findOne({username: username});
+     const user = await UserModel.findOne({username: username}, {timestamps: true});
  
      if (user) {
         url = "register"
         q = failUrlEncode("username already taken")
+        res.redirect(`/${url}?${q}`);
+     } else {
+      const userDoc = new UserModel({ username, password });
+      await userDoc.save();
+      url = "login"
+      q = successUrlEncode("Successfully registered user");
+      res.redirect(`/${url}?${q}`);
      }
- 
-   else {
-        url = "login"
-        q = successUrlEncode("Successfully registered user");
-        const userDoc = new UserModel({ username, password });
-        userDoc.save();
-     }
-    
     } catch (err) {
-      console.error(err.message);
       url = "register"
       q = failUrlEncode("something went wrong, try again");
-    } finally {
       res.redirect(`/${url}?${q}`);
-    }
+    } 
+  
   }
   
   async function logout(req, res) {

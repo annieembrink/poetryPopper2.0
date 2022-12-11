@@ -1,6 +1,7 @@
 <nav> 
-    <h2>test</h2>
     <% if (isAuth) { %>
+        <p class="colorBlack padding10">Logged in user: <%=user%></p>
+
         <ul id="authMenu">
             <li><a href="/yourwork">Your work</a></li>
             <li><a href="/poems">Community</a></li>
@@ -17,4 +18,5 @@
             <li><a href="/register">Register</a></li>
         </ul>
     <% } %> 
+
 </nav>

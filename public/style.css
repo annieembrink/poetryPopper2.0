@@ -18,6 +18,9 @@
 .marginTop30 {
   margin-top: 30px;
 }
+.padding10 {
+  padding: 10px;
+}
 .alignCenter {
   text-align: center;
 }
@@ -42,6 +45,10 @@
   background-color: #6D213C;
 }
 
+.colorBlack {
+  color: black;
+}
+
 .fontsize {
   font-size: 0.8rem;
 }
@@ -51,7 +58,7 @@
 }
 
 .whitespace {
-  white-space: pre-line;
+  /* white-space: pre-line; */
 }
 
 #h2Title {
@@ -95,6 +102,10 @@ body {
     height: 100vh;
     margin: auto;
     position: relative;
+}
+
+pre {
+  font-family: 'Syne Mono', monospace;
 }
 
 #nonAuthMenu, #authMenu {
@@ -273,10 +284,10 @@ input {
 }
 
 #thepoem {
-  white-space: pre-line;
-  text-align: left;
+  /* white-space: pre-line; */
+  /* text-align: left;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 10px; */
 }
 
 button {
