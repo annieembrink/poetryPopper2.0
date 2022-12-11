@@ -7,6 +7,10 @@ const UserRouter = Router();
 // UserRouter.get("*", UserController.getHome);
 UserRouter.get("/", UserController.getHome);
 
+UserRouter.get("/account", ensureAuth, UserController.getAccount);
+UserRouter.post("/account/:id", ensureAuth, UserController.changeAccount);
+UserRouter.delete("/account/:id/deleted", ensureAuth, UserController.deleteAccount);
+
 UserRouter.get("/login", ensureNotAuth, UserController.getLogin);
 UserRouter.post("/login", ensureNotAuth, UserController.login);
 

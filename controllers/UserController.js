@@ -41,6 +41,47 @@ async function getHome(req, res) {
       res.render("login", locals)
     }
   }
+  async function getAccount(req, res) {
+    let locals;
+    try {
+      locals = {serverMessage: req.query, pageTitle: "Your account", isAuth: req.session.isAuth, userId: req.session.userId, user: req.session.username || null}
+    } catch (error) {
+      console.log(error)
+    } finally {
+      res.render("account", locals)
+    }
+  }
+  async function changeAccount(req, res) {
+    let locals;
+    try {
+      console.log('req.body', req.body)
+      const user = await UserModel.findOne({ username: username });
+
+      locals = {serverMessage: req.query, pageTitle: "Your account", isAuth: req.session.isAuth, user: req.session.username || null}
+    } catch (error) {
+      console.log(error)
+    } finally {
+      res.redirect("/login")
+    }
+  }
+
+  async function deleteAccount(req, res) {
+    const q = successUrlEncode("successfully deleted account")
+
+    try {
+      console.log('delete', req.params.id)
+      const id = req.params.id
+      const deletedUser = await UserModel.deleteOne({ _id: ObjectId(id) });
+      const deletedPoems = await PoemModel.deleteMany({ postedBy: ObjectId(id) });
+      console.log(deletedUser, deletedPoems)
+      req.session.destroy();
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+    res.redirect(`/register?${q}`)
+    }
+  }
   
   async function login(req, res) {
 
@@ -78,6 +119,7 @@ async function getHome(req, res) {
   async function getRegister(req, res) {
     let locals;
     try {
+      console.log(req.query.message, req.params)
       locals = { serverMessage: req.query, pageTitle: "Register", isAuth: req.session.isAuth, user: req.session.username || null }
     } catch (error) {
       console.log(error)
@@ -85,6 +127,7 @@ async function getHome(req, res) {
     res.render("register", locals)
     }
   }
+
   
   async function register(req, res) {
 
@@ -94,7 +137,7 @@ async function getHome(req, res) {
 
      const { username, password } = req.body;
 
-     const user = await UserModel.findOne({username: username}, {timestamps: true});
+     const user = await UserModel.findOne({username: username});
  
      if (user) {
         url = "register"
@@ -108,6 +151,7 @@ async function getHome(req, res) {
       res.redirect(`/${url}?${q}`);
      }
     } catch (err) {
+      console.log(err)
       url = "register"
       q = failUrlEncode("something went wrong, try again");
       res.redirect(`/${url}?${q}`);
@@ -134,7 +178,10 @@ async function getHome(req, res) {
   export default {
     getHome,
     getLogin,
+    getAccount,
+    changeAccount,
     login,
+    deleteAccount,
     getRegister,
     register,
     logout,
