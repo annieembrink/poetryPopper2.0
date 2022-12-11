@@ -4,6 +4,7 @@ import CommentModel from "../models/CommentModel.js";
 import { ObjectId } from "mongodb";
 import { successUrlEncode, failUrlEncode } from "../utils.js";
 import bcrypt from 'bcryptjs';
+import { userInfo } from "os";
 
 async function getHome(req, res) {
 
@@ -35,6 +36,7 @@ async function getHome(req, res) {
   async function getLogin(req, res) {
     let locals;
     try {
+      console.log('get login', req.query, req.params)
       locals = {serverMessage: req.query, pageTitle: "Login", isAuth: req.session.isAuth, user: req.session.username || null}
     } catch (error) {
       console.log(error)
@@ -53,16 +55,35 @@ async function getHome(req, res) {
     }
   }
   async function changeAccount(req, res) {
-    let locals;
+    let q; 
     try {
+      const {username, oldPassword, newPassword, id} = req.body; 
       console.log('req.body', req.body)
-      const user = await UserModel.findOne({ username: username });
 
-      locals = {serverMessage: req.query, pageTitle: "Your account", isAuth: req.session.isAuth, user: req.session.username || null}
+      const user = await UserModel.findOne({_id: ObjectId(id)});
+
+      const match = bcrypt.compareSync(oldPassword, user.password);
+      console.log('match', match)
+
+      if(match) {
+        let hashedpw = bcrypt.hashSync(newPassword, 10)
+        let test= await UserModel.findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { username, password: hashedpw }
+        );
+        console.log(test)
+      q = successUrlEncode("successfully updated account")  
+
+      } else {
+        q = failUrlEncode("couldn't update account, try again")
+      }
+
     } catch (error) {
       console.log(error)
+      q = failUrlEncode("couldn't update account, try again")
+
     } finally {
-      res.redirect("/login")
+      res.redirect(`/login?${q}`)
     }
   }
 
