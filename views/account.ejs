@@ -8,18 +8,20 @@
     <%- include('partials/serverMessage') %>
     <main>
         <h1 class="alignCenter marginBottom30">Your account</h1>
-        <p><%=userId%></p>
 
         <form action="/account" method="POST">
             <div id="loginDiv" class="logRegDiv">
+
                 <input type="text" placeholder="username" name="username" value="<%=user%>" />
                 <input type="password" placeholder="old password" name="oldPassword" />
                 <input type="password" placeholder="new password" name="newPassword" />
                 <button class="marginTop30" type="submit">Change account settings</button>
+
+                <button class="bg-red" onclick="deleteUser('<%=userId%>')">Delete account</button>
             </div>
         </form>
-        <p>When you delete your account, all of your poems, collections and comments will be deleted as well.</p>
-        <button class="bg-red" onclick="deleteUser('<%=userId%>')">Delete account</button>
+        <p class="alignCenter marginTop30 width80 marginAuto">When you delete your account, all of your poems, collections and comments will be deleted as well.</p>
+
 
 
     </main>

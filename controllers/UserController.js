@@ -1,5 +1,6 @@
 import UserModel from "../models/UserModel.js";
 import PoemModel from "../models/PoemModel.js";
+import CommentModel from "../models/CommentModel.js";
 import { ObjectId } from "mongodb";
 import { successUrlEncode, failUrlEncode } from "../utils.js";
 import bcrypt from 'bcryptjs';
@@ -66,14 +67,15 @@ async function getHome(req, res) {
   }
 
   async function deleteAccount(req, res) {
-    const q = successUrlEncode("successfully deleted account")
+    const q = successUrlEncode("successfully deleted account")  
 
     try {
       console.log('delete', req.params.id)
       const id = req.params.id
       const deletedUser = await UserModel.deleteOne({ _id: ObjectId(id) });
       const deletedPoems = await PoemModel.deleteMany({ postedBy: ObjectId(id) });
-      console.log(deletedUser, deletedPoems)
+      const deletedComments = await CommentModel.deleteMany({ postedBy: ObjectId(id) });
+      console.log(deletedUser, deletedPoems, deletedComments)
       req.session.destroy();
 
     } catch (error) {
