@@ -14,15 +14,17 @@
             <h4>1. Choose the title of your poem</h4>
             <div class="poemContent">
                 <input id="createTitle" type="text" placeholder="title" name="name" required/>
-            <h4 class="marginTop30">2. Just paste one of your favourite lyrics in the field below (or click the buttons to choose one of the suggested lyrics)</h4>
-            <button value="river" onclick="getLyric(value)">River, by Joni Mitchel</button>
-            <button value="blank space" onclick="getLyric(value)">Blank space, by Taylor Swift</button>
-            <button value="hallelujah" onclick="getLyric(value)">Hallelujah, by Leonard Cohen</button>
-            <button value="love will tear us apart" onclick="getLyric(value)">Love will tear us apart, by Joy division</button>
-
-                <!-- <input id="createpoem" type="text" placeholder="poem" name="poem" required/> -->
             </div>
         </form>
+
+        <h4 id="lyricH4" class="marginTop30">2. Just paste one of your favourite lyrics in the field below (or click the buttons to choose one of the suggested lyrics)</h4>
+        <div id="lyricButtons" class="lyricButtons displayGrid">
+        <button value="river" onclick="getLyric(value)">River, by Joni Mitchel</button>
+        <button value="blank space" onclick="getLyric(value)">Blank space, by Taylor Swift</button>
+        <button value="hallelujah" onclick="getLyric(value)">Hallelujah, by Leonard Cohen</button>
+        <button value="love will tear us apart" onclick="getLyric(value)">Love will tear us apart, by Joy division</button>
+    </div>
+
         <textarea class="marginTop30" form="addForm" name="poem" id="createpoem" cols="30" rows="10" placeholder="paste the lyrics here" required></textarea>
         <button id="startCreateBtn" form="addForm" type="submit">Let's start creating!</button>
 
@@ -50,93 +52,8 @@
 
     
     </main>
+<script src="/main.js"></script>
+
 </body>
-
-<script>
-    const createPoemForm = document.getElementById('addForm');
-    const textAreaDiv = document.getElementById('textAreaDiv');
-    const startCreateBtn = document.getElementById('startCreateBtn');
-    const editContainer = document.getElementById('editContainer')
-    const inputTitle = document.getElementById('createTitle');
-    const inputPoem = document.getElementById('createpoem');
-    const editPoem = document.getElementById('editPoem');
-    const editedPoem = document.getElementById('editedPoem');
-    const radioButtons = document.querySelectorAll('input[name="visibility"]')
-  
-    function getLyric(str) {
-        fetch('lyrics.json')
-    .then(res => res.json())
-    .then(data => {
-        let chosenSong = data.filter(song => song.title === str)
-        chosenSong.map(info => {
-            inputPoem.innerText = info.lyrics
-        })
-    })
-    }
-    createPoemForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        createPoemForm.style.display = 'none';
-        inputPoem.style.display = 'none';
-        startCreateBtn.style.display = 'none';
-        editContainer.hidden = false; 
-
-        const h2Tag = document.createElement('h2');
-        h2Tag.innerText = inputTitle.value.trim();
-        h2Tag.setAttribute('id', 'h2Title')
-
-        editContainer.prepend(h2Tag)
-        editPoem.innerText = inputPoem.innerText;
-    })
-         
-
-    editPoem.addEventListener("mouseup", onMouseUp, false)
-
-    function onMouseUp() {
-        const activeTextarea = document.activeElement;
-        const selection = activeTextarea.value.substring(
-            activeTextarea.selectionStart, activeTextarea.selectionEnd)
-
-        if (selection.length > 1) {
-            editedPoem.value += `${selection.trim()}\n`
-            // editedPoem.value += `${selection.trim()}`
-        }
-
-    }
-
-    function tryagain() {
-        editedPoem.value = "";
-    }
-
-    function newPoemValue() {
-        console.log(editedPoem.textContent)
-        const h2Title = document.getElementById('h2Title')
-
-        let visibilityValue;
-            for (const radioButton of radioButtons) {
-                if (radioButton.checked) {
-                    visibilityValue = radioButton.value;
-                    break;
-                }
-            }
-        
-            console.log(visibilityValue, editedPoem.innerText)
-
-        fetch('/createpoem', {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json", // let server know that body is a string of json
-            },
-            body: JSON.stringify({ name: h2Title.textContent, poem: editedPoem.value, visibility: visibilityValue}),
-          })
-          .then((res) => {
-                    console.log(res);
-                    if (res.redirected) {
-                        window.location.href = res.url;
-                    }
-                })
-            .catch((err) => console.error(err));
-    }
-
-</script>
 
 </html>

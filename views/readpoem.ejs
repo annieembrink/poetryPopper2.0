@@ -9,9 +9,7 @@
   <main>
     <h2><%=poem.name%><small>, by <%=poem.postedBy?.username%></small></h2>
     <!-- <div id="thepoem"></div> -->
-    <pre id="thePoem">
-      <%=poem.poem%>
-    </pre>
+    <pre class="removePreLine"><%=poem.poem%></pre>
 
     <p class="marginTop30">Leave a nice comment!</p>
     <form id="commentForm">
@@ -32,39 +30,7 @@
 
   </main>
 
-  <script>
-    document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg,
-      "");
-    const comment = document.getElementById('commentTextArea');
-    const commentForm = document.getElementById('commentForm')
-    console.log(comment)
-
-    function postComment(id) {
-
-      commentForm.onsubmit = (e) => {
-      e.preventDefault()
-      fetch(`/poems/${id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", // let server know that body is a string of json
-          },
-          body: JSON.stringify({
-            comment: comment.value,
-            id: id
-          }),
-        })
-        .then((res) => {
-          console.log('response', res)
-          if (res.redirected) {
-            window.location.href = res.url;
-            console.log('was redirected')
-          }
-        })
-        .catch((err) => console.error(err));
-
-      }
-    }
-  </script>
+<script src="/main.js"></script>
 
 </body>
 

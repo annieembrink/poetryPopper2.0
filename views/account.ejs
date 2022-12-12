@@ -15,62 +15,18 @@
                 <input type="text" placeholder="username" name="username" value="<%=user%>" id="changeUsername"/>
                 <input type="password" placeholder="old password" name="oldPassword" id="oldpw" />
                 <input type="password" placeholder="new password" name="newPassword" id="newpw"/>
-                <button class="marginTop30" onclick="updateUser('<%=userId%>')">Change account settings</button>
+                <button class="marginTop30 marginBottom30" onclick="updateUser('<%=userId%>')">Change account settings</button>
+                <p class="alignCenter marginTop30 width80 marginAuto">When you delete your account, all of your poems will be deleted as well.</p>
 
-                <button class="bg-red" onclick="deleteUser('<%=userId%>')">Delete account</button>
             </div>
         </form>
-        <p class="alignCenter marginTop30 width80 marginAuto">When you delete your account, all of your poems,
-            collections and comments will be deleted as well.</p>
-
+        <form id="deleteUserForm" class="logRegDiv">
+            <button type="submit" class="bg-red" onclick="deleteUser('<%=userId%>')">Delete account</button>
+        </form>
     </main>
 
-    <script>
-        const changeUserForm = document.getElementById('changeUserForm')
-        function deleteUser(id) {
-            console.log("Delete user was triggered with id", id);
-
-            fetch(`/account/${id}/deleted`, {
-                    method: "DELETE"
-                })
-                .then((resp) => {
-                    console.log(resp);
-                    if (resp.redirected) {
-                        window.location.href = resp.url;
-                    }
-                })
-                .catch((err) => console.log(err));
-        }
-
-        function updateUser(id) {
-
-            changeUserForm.onsubmit = (e) => {
-                e.preventDefault()
-            const changeUsername = document.getElementById('changeUsername').value
-            const newPassword = document.getElementById('newpw').value
-            const oldPassword = document.getElementById('oldpw').value
-            fetch(`/account/${id}/updated`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json", // let server know that body is a string of json
-                    },
-                    body: JSON.stringify({
-                        username: changeUsername,
-                        oldPassword: oldPassword,
-                        newPassword: newPassword,
-                        id: id
-                    }),
-                })
-                .then(res => {
-                    console.log(res)
-                    if (res.redirected) {
-                        window.location.href = res.url;
-                    }
-                })
-                .catch((err) => console.error(err));
-            }
-        }
-    </script>
+    <script src="/main.js"></script>
+   
 </body>
 
 </html>

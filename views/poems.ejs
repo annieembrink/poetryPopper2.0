@@ -35,39 +35,9 @@
        <% } %>
    
     </main>
-    <script>
-        function handleDelete(id) {
-            console.log("Delete was triggered with id", id);
 
-            fetch(`/poems/${id}`, {
-                    method: "DELETE"
-                })
-                .then((resp) => {
-                    console.log(resp);
-                    if (resp.redirected) {
-                        window.location.href = resp.url;
-                    }
-                })
-                .catch((err) => console.log(err));
-        }
+    <script src="/main.js"></script>
 
-        function readPoem(id) {
-            console.log("read poem was triggered", id);
-
-            fetch(`/poems/${id}`, {
-                    method: "GET"
-                })
-                .then((res) => {
-                    console.log(res);
-                    // if (res.redirected) {
-                    //     window.location.href = res.url;
-                    // }
-                })
-                .catch((err) => console.log(err));
-        }
-
-
-    </script>
 </body>
 
 </html>

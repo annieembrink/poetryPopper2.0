@@ -53,6 +53,15 @@
   font-size: 0.8rem;
 }
 
+.displayGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+}
+.displayGrid button {
+  min-height: 60px;
+}
+
 .text-decoration-default {
   text-decoration: underline;
 }
@@ -191,13 +200,13 @@ header p {
   color: #BAAB68;
 }
 
-#loginOrReg {
+/* #loginOrReg {
   width: 100%;
   padding: 20px;
   position: fixed;
   left: 0;
   bottom: 0;
-}
+} */
 
 .homePoem {
   background-color: lightgray;
@@ -281,13 +290,6 @@ input {
 
 .visibilityButtons {
   display: inline;
-}
-
-#thepoem {
-  /* white-space: pre-line; */
-  /* text-align: left;
-  padding: 10px;
-  border-radius: 10px; */
 }
 
 button {

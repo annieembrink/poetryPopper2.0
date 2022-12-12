@@ -11,9 +11,7 @@
 
     </h4><br>
     <div id="poemDiv">
-    <pre id="thePoem">
-      <%=poem.poem%>
-    </pre>
+    <pre id="thePoem"><%=poem.poem%></pre>
    
     <button class="marginTop30" id="editBtn" onclick="handleEdit('<%=poem._id%>')">Edit poem</button>
   </div>
@@ -44,59 +42,9 @@
 
 
   </main>
-  <script>
+ 
+<script src="/main.js"></script>
 
-        //erase first line of whitespace
-        document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg, "");
 
-       function handleEdit(id) {
-            const editFormEl = document.getElementById("editForm");
-            const oldPoem = document.getElementById('thePoem')
-            const oldName = document.getElementById('theTitle')
-            const oldVisibility = document.getElementById('visibility').textContent
-            const editBtn = document.getElementById('editBtn')
-            
-            oldPoem.contentEditable = "true";
-            oldPoem.focus()
-            oldName.contentEditable = "true";
-            editBtn.hidden = true; 
-
-            // Show edit form
-            document.getElementById("editForm").hidden = false;
-            editFormEl.elements.visibility.value = oldVisibility;
-            console.log(oldVisibility)
-
-            // Setup submit handler for edit form
-            editFormEl.onsubmit = (e) => {
-                e.preventDefault();
-
-                const newName = oldName.innerText
-                const newPoem = oldPoem.innerText
-                const newVisibility = editFormEl.elements.visibility.value
-
-                console.log(newVisibility.length)
-
-                // tip: use fetch
-                fetch(`/poems/${id}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json", // let server know that body is a string of json
-                        },
-                        body: JSON.stringify({
-                            name: newName,
-                            poem: newPoem,
-                            visibility: newVisibility
-                        }),
-                    })
-                    .then(res => {
-                      console.log(res)
-                      if (res.redirected) {
-                        window.location.href = res.url;
-                       }
-                    })
-                    .catch((err) => console.error(err));
-            };
-        }
-  </script>
   </body>
 </html>

@@ -12,8 +12,12 @@ Poetry popper är en typ av textredigeringsapplikation som kan fungera som ett v
 6. Skriv git clone https://github.com/annieembrink/poetryPopper2.0.git
 7. Skriv cd poetryPopper2.0 i terminalen
 8. Skriv npm install i terminalen
-9. Starta appen genom att skriva npm run dev i terminalen
-10. Gå in på localhost:3000 i din webbläsare för att se applikationen
+9. Skapa en egen fil som du döper till .env
+- Lägg i denna fil in dina egna värden för
+    - SESSION_SECRET=""
+    - MONGO_CONNECTION_STR=""
+10. Starta appen genom att skriva npm run dev i terminalen
+11. Gå in på localhost:3000 i din webbläsare för att se applikationen
 
 # ANVÄND APPEN
 1. Välj titel </br>

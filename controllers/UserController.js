@@ -36,6 +36,20 @@ async function getHome(req, res) {
     res.render("home", locals);
   }
 
+  async function getRegister(req, res) {
+    let locals;
+    try {
+      console.log(req.query.message, req.params)
+      locals = { serverMessage: req.session.serverMessage || req.query, pageTitle: "Register", isAuth: req.session.isAuth, user: req.session.username || null }
+    } catch (error) {
+      console.log(error)
+    } finally {
+    res.render("register", locals)
+    req.session.serverMessage = {}
+
+    }
+  }
+
   async function getLogin(req, res) {
     let locals;
     try {
@@ -99,7 +113,7 @@ async function getHome(req, res) {
   }
 
   async function deleteAccount(req, res) {
-    const q = successUrlEncode("successfully deleted account")  
+    let q; 
     // req.session.serverMessage = {type: "success", message: "Successfully deleted account"}
 
     try {
@@ -109,10 +123,14 @@ async function getHome(req, res) {
       const deletedPoems = await PoemModel.deleteMany({ postedBy: ObjectId(id) });
       const deletedComments = await CommentModel.deleteMany({ postedBy: ObjectId(id) });
       console.log(deletedUser, deletedPoems, deletedComments)
+      q = successUrlEncode("successfully deleted account")  
+
       req.session.destroy();
 
     } catch (error) {
       console.log(error)
+      q = failUrlEncode("Couldn't delete account")  
+
     } finally {
     res.redirect(`/register?${q}`)
     }
@@ -155,21 +173,6 @@ async function getHome(req, res) {
       res.redirect(`/${url}`); 
     }
   }
-  
-  async function getRegister(req, res) {
-    let locals;
-    try {
-      console.log(req.query.message, req.params)
-      locals = { serverMessage: req.session.serverMessage, pageTitle: "Register", isAuth: req.session.isAuth, user: req.session.username || null }
-    } catch (error) {
-      console.log(error)
-    } finally {
-    res.render("register", locals)
-    req.session.serverMessage = {}
-
-    }
-  }
-
   
   async function register(req, res) {
 

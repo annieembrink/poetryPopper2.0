@@ -55,16 +55,16 @@ userSchema.pre("save", function (next) {
 
 
 //is below needed?
-userSchema.pre('findOneAndUpdate', async function() {
-  const docToUpdate = await this.model.findOne(this.getQuery());
-  console.log('docToUpdate', docToUpdate); // The document that `findOneAndUpdate()` will modify
+// userSchema.pre('findOneAndUpdate', async function() {
+//   const docToUpdate = await this.model.findOne(this.getQuery());
+//   console.log('docToUpdate', docToUpdate); // The document that `findOneAndUpdate()` will modify
 
-});
-userSchema.post('findOneAndUpdate', async function() {
-  const docToUpdate = await this.model.findOne(this.getQuery());
-  console.log('docToUpdatePOSt', docToUpdate); // The document that `findOneAndUpdate()` will modify
+// });
+// userSchema.post('findOneAndUpdate', async function() {
+//   const docToUpdate = await this.model.findOne(this.getQuery());
+//   console.log('docToUpdatePostt', docToUpdate); // The document that `findOneAndUpdate()` will modify
 
-});
+// });
 
 
 const UserModel = mongoose.model("User", userSchema);
