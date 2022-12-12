@@ -1,58 +1,87 @@
 import PoemModel from "../models/PoemModel.js";
 import CommentModel from "../models/CommentModel.js";
-import { successUrlEncode, failUrlEncode } from "../utils.js";
-import { ObjectId } from "mongodb";
+import {
+  successUrlEncode,
+  failUrlEncode
+} from "../utils.js";
+import {
+  ObjectId
+} from "mongodb";
 
 //Display all poems. Public and private ones. 
 async function getAllPoems(req, res) {
-  console.log('req query', req.query)
+  // console.log('req query', req.query)
   let userPoemMatch = false;
 
-    if(req.query.message || Object.keys(req.query).length === 0) {
     //Find all public poems and populate username
-    const publicPoems = await PoemModel.find({visibility: 'public'}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
+    const publicPoems = await PoemModel.find({
+      visibility: 'public'
+    }).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
     //We need id of auth and logged in user to display their own poems
-    const {userId} = req.session 
+    const {
+      userId
+    } = req.session
 
     for (let i = 0; i < publicPoems.length; i++) {
       const poem = publicPoems[i];
       //Find who created that poem
-  if(poem.postedBy) {
-    const whoCreatedThePoem = poem.postedBy._id.valueOf();
-    console.log(whoCreatedThePoem)
+      if (poem.postedBy) {
+        const whoCreatedThePoem = poem.postedBy._id.valueOf();
+        console.log(whoCreatedThePoem)
 
-    if (whoCreatedThePoem === userId) {
-      poem.userPoemMatch = true; 
-    } else {
-      poem.userPoemMatch = false; 
-    }
-  } else {
-    poem.userPoemMatch = false; 
-  }
+        if (whoCreatedThePoem === userId) {
+          poem.userPoemMatch = true;
+        } else {
+          poem.userPoemMatch = false;
+        }
+      } else {
+        poem.userPoemMatch = false;
+      }
     }
 
-    const locals = { publicPoems, serverMessage: req.query, pageTitle: "Community", isAuth: req.session.isAuth, user: req.session.username, userPoemMatch };
+    const locals = {
+      publicPoems,
+      serverMessage: req.query,
+      pageTitle: "Community",
+      isAuth: req.session.isAuth,
+      user: req.session.username,
+      userPoemMatch
+    };
     // console.log('get all poems', req.query)
     res.render("poems", locals);
-    }
-
+  
 }
 async function getYourWork(req, res) {
-    //We need id of auth and logged in user to display their own poems
-    const {userId} = req.session 
+  //We need id of auth and logged in user to display their own poems
+  const {
+    userId
+  } = req.session
 
-    //Find them in db
-    // const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
-    const userPoems = await PoemModel.find({postedBy: userId}).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
+  //Find them in db
+  // const userPoems = await PoemModel.find({visibility: "private", postedBy: ObjectId(userId)}) || [];
+  const userPoems = await PoemModel.find({
+    postedBy: userId
+  }).populate("postedBy", "username").exec(); // I want user.username to populate postedBy 
 
-    const locals = { userPoems, serverMessage: req.query, pageTitle: "Your work", isAuth: req.session.isAuth, user: req.session.username };
-    // console.log('get all poems', req.query)
-    res.render("yourWork", locals);
+  const locals = {
+    userPoems,
+    serverMessage: req.query,
+    pageTitle: "Your work",
+    isAuth: req.session.isAuth,
+    user: req.session.username
+  };
+  // console.log('get all poems', req.query)
+  res.render("yourWork", locals);
 }
 async function notFound(req, res) {
-    const locals = { serverMessage: req.query, pageTitle: "Page not found", isAuth: req.session.isAuth, user: req.session.username };
-    res.render("notFound", locals);
+  const locals = {
+    serverMessage: req.query,
+    pageTitle: "Page not found",
+    isAuth: req.session.isAuth,
+    user: req.session.username
+  };
+  res.render("notFound", locals);
 }
 
 //Get requested poem, open one specific poem to read
@@ -64,53 +93,77 @@ async function getPoem(req, res) {
   let locals;
 
   try {
+    
+      //id of clicked poem
+      const poemId = req.params.id;
+      // console.log('req params', req.params, 'req query', req.query)
 
-    //Dont know why the comment in function commentPoem is sent as query?
-    if (!req.query.comment) {
-            //id of clicked poem
-  const poemId = req.params.id;
-  // console.log('req params', req.params, 'req query', req.query)
+      //id of logged in user
+      const {
+        userId
+      } = req.session
 
-  //id of logged in user
-  const {userId} = req.session 
+      //find the clicked poem in db
+      const poem = await PoemModel.findOne({
+        _id: poemId
+      }).populate("postedBy", "username").exec();
 
-  //find the clicked poem in db
-  const poem = await PoemModel.findOne({_id: poemId}).populate("postedBy", "username").exec();
+      //find comments connected to clicked poem
+      const comments = await CommentModel.find({
+        poemId: poemId
+      }).populate("postedBy", "username").exec();
 
-  //find comments connected to clicked poem
-  const comments = await CommentModel.find({poemId: poemId}).populate("postedBy", "username").exec();
+      //Find who created that poem
+      const whoCreatedThePoem = poem.postedBy._id.valueOf();
 
-  //Find who created that poem
-  const whoCreatedThePoem = poem.postedBy._id.valueOf();
-
-  //render edit page if user who requests poem is the same as created the poem
-  if (whoCreatedThePoem === userId) {
-    console.log('this is your own poem')
-      userPoemMatch = true;
-      locals = {poem, pageTitle: "Read and edit poem", isAuth: req.session.isAuth, serverMessage: req.query, poemId, userPoemMatch, comments, user: req.session.username}
-      res.render("readAndEditPoem", locals)
-  } else { //render read page if user who requests poem did not create it
-    console.log('you didnt write this poem')
-    userPoemMatch = false; 
-    locals = {poem, pageTitle: "Read poem", isAuth: req.session.isAuth, serverMessage: req.query, userPoemMatch, poemId, comments, user: req.session.username}
-    res.render("readPoem", locals)
-  }
-    } else {
-      console.log('ERROR')
-    }
+      //render edit page if user who requests poem is the same as created the poem
+      if (whoCreatedThePoem === userId) {
+        console.log('this is your own poem')
+        userPoemMatch = true;
+        locals = {
+          poem,
+          pageTitle: "Read and edit poem",
+          isAuth: req.session.isAuth,
+          serverMessage: req.query,
+          poemId,
+          userPoemMatch,
+          comments,
+          user: req.session.username
+        }
+        res.render("readAndEditPoem", locals)
+      } else { //render read page if user who requests poem did not create it
+        console.log('you didnt write this poem')
+        userPoemMatch = false;
+        locals = {
+          poem,
+          pageTitle: "Read poem",
+          isAuth: req.session.isAuth,
+          serverMessage: req.query,
+          userPoemMatch,
+          poemId,
+          comments,
+          user: req.session.username
+        }
+        res.render("readPoem", locals)
+      }
 
   } catch (error) {
     console.log(error)
     res.render('home')
-} 
+  }
 }
 
 
 //Get page create poem
 async function getCreatePoem(req, res) {
-  let locals; 
+  let locals;
   try {
-    locals = {pageTitle: "Create poem", isAuth: req.session.isAuth, serverMessage: req.query, user: req.session.username}
+    locals = {
+      pageTitle: "Create poem",
+      isAuth: req.session.isAuth,
+      serverMessage: req.query,
+      user: req.session.username
+    }
   } catch (error) {
     console.log(error)
   } finally {
@@ -124,37 +177,53 @@ async function updatePoem(req, res) {
   try {
     const id = req.params.id;
 
-    const { name, poem, visibility}  = req.body;
+    const {
+      name,
+      poem,
+      visibility
+    } = req.body;
 
 
-    
-    await PoemModel.findOneAndUpdate(
-      { _id: ObjectId(id) },
-      { name, poem, visibility }
-    );
 
-    
+    await PoemModel.findOneAndUpdate({
+      _id: ObjectId(id)
+    }, {
+      name,
+      poem,
+      visibility
+    });
+
+
     q = successUrlEncode("Successfully updated poem")
     res.redirect(`/poems/${id}/edited?${q}`);
 
 
-  } catch(err) {
+  } catch (err) {
     console.error('catch', err.message);
     q = failUrlEncode("Could not update poem, try again")
     res.redirect(`/poems/?${q}`);
-  } 
+  }
 }
 
 async function addPoem(req, res) {
   let q;
 
   try {
-    const {name, poem, visibility} = req.body;
+    const {
+      name,
+      poem,
+      visibility
+    } = req.body;
 
     const postedBy = ObjectId(req.session.userId);
 
-    const poemDoc = new PoemModel({name , poem, visibility, postedBy})
-    
+    const poemDoc = new PoemModel({
+      name,
+      poem,
+      visibility,
+      postedBy
+    })
+
     poemDoc.save();
 
     q = successUrlEncode("Successfully created poem")
@@ -165,7 +234,7 @@ async function addPoem(req, res) {
     console.error(err.message);
     q = failUrlEncode("Something went wrong, try again")
     res.redirect(`/poems?${q}`);
-  } 
+  }
 }
 
 async function deletePoem(req, res) {
@@ -173,11 +242,15 @@ async function deletePoem(req, res) {
 
   try {
     // get id from params /poems/<this-part>
-    const { id } = req.params;
-    
+    const {
+      id
+    } = req.params;
+
     // get result from deletion
-    const result = await PoemModel.deleteOne({ _id: id });
-    
+    const result = await PoemModel.deleteOne({
+      _id: id
+    });
+
     q = successUrlEncode("Successfully deleted poem!");
 
   } catch (err) {
@@ -199,7 +272,11 @@ async function commentPoem(req, res) {
     console.log(poemId)
     const postedBy = req.session.userId
 
-    const commentDoc = new CommentModel({comment, poemId, postedBy})
+    const commentDoc = new CommentModel({
+      comment,
+      poemId,
+      postedBy
+    })
 
     // save comment
     await commentDoc.save();
@@ -218,7 +295,7 @@ async function commentPoem(req, res) {
     console.error(err.message);
     q = failUrlEncode("Couldn't comment, try again")
     res.redirect(`/poems?${q}`)
-  } 
+  }
 }
 
 export default {

@@ -53,36 +53,8 @@ userSchema.pre("save", function (next) {
   }
 });
 
-// userSchema.pre('findOneAndUpdate', function (next) {
-//   this.options.runValidators = true
-//   next()
-// })
 
-// userSchema.pre('findOneAndUpdate', function (next) {
-//   console.log(this.password)
-//   try {
-//     if (!this.isModified("password")) {
-//       return next();
-//     }
-
-//     // hash password
-//     this.password = bcrypt.hashSync(this.password, 10);
-
-//     // after hashing continue with save()
-//     next();
-//   } catch (err) {
-//     throw new Error("Inccorect password", err);
-//   }
-// })
-
-// userSchema.pre('find', function() {
-//   console.log('pre', this.password)
-// });
-
-// userSchema.post('find', function(result) {
-//   console.log('post', this.password)
-// });
-
+//is below needed?
 userSchema.pre('findOneAndUpdate', async function() {
   const docToUpdate = await this.model.findOne(this.getQuery());
   console.log('docToUpdate', docToUpdate); // The document that `findOneAndUpdate()` will modify

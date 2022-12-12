@@ -7,6 +7,9 @@ import bcrypt from 'bcryptjs';
 
 async function getHome(req, res) {
 
+  console.log('req.query', req.query)
+
+
   //get all public poems to display on home page
     const publicPoems = await PoemModel.find({visibility: 'public'}).populate('postedBy', 'username').exec();
     let threeRandomPoems = [];
