@@ -1,10 +1,5 @@
 # poetryPopper2.0
 
-En README.md i gitrepot med följande delar:
-Introduction: Vad gör er app och vilket problem löser det?
-Requirements & Installation: Vad behövs för att man själv ska kunna köra appen?
-Screenshots: minst en screenshot (eller gif) som visar appen under använding
-
 # INTRODUCTION
 Poetry popper är en typ av textredigeringsapplikation som kan fungera som ett verktyg i skapande av dikter, lyrik, låttexter etc. Genom att använda sig av redan befintliga texter (tex en låttext) kan man markera ord och meningar och på så sätt skapa nya texter. 
 
@@ -21,4 +16,13 @@ Poetry popper är en typ av textredigeringsapplikation som kan fungera som ett v
 10. Gå in på localhost:3000 i din webbläsare för att se applikationen
 
 # ANVÄND APPEN
-![Screenshot](bild1.png)
+1. Välj titel </br>
+![Screenshot](docs/bild1.png)
+2. Klistra in text som redan finns </br>
+![Screenshot](docs/bild2.png)
+3. Markera orden du vill ha i din nya dikt </br>
+![Screenshot](docs/bild3.png)
+4. Här visas den färdiga dikten </br>
+![Screenshot](docs/bild4.png)
+5. Ändra vid behov </br>
+![Screenshot](docs/bild5.png)

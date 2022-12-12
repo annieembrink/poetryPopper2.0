@@ -14,7 +14,7 @@
     </pre>
 
     <p class="marginTop30">Leave a nice comment!</p>
-    <form>
+    <form id="commentForm">
       <input type="text" id="commentTextArea" name="comment">
       <button type="submit" onclick="postComment('<%= poem._id%>')">Send comment</button>
     </form>
@@ -36,10 +36,13 @@
     document.getElementById('thePoem').textContent = document.getElementById('thePoem').textContent.replace(/^\s+/mg,
       "");
     const comment = document.getElementById('commentTextArea');
+    const commentForm = document.getElementById('commentForm')
     console.log(comment)
 
     function postComment(id) {
 
+      commentForm.onsubmit = (e) => {
+      e.preventDefault()
       fetch(`/poems/${id}`, {
           method: "POST",
           headers: {
@@ -58,6 +61,8 @@
           }
         })
         .catch((err) => console.error(err));
+
+      }
     }
   </script>
 

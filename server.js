@@ -11,7 +11,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "secret",
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 600000 } 
+  cookie: { maxAge: 1000 * 60 * 60 } 
 }))
 
 // Use ejs as the templeting engine

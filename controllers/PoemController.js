@@ -12,6 +12,7 @@ import {
 async function getAllPoems(req, res) {
   // console.log('req query', req.query)
   let userPoemMatch = false;
+  console.log('req session servermessage', req.session.serverMessage)
 
     //Find all public poems and populate username
     const publicPoems = await PoemModel.find({
@@ -28,7 +29,7 @@ async function getAllPoems(req, res) {
       //Find who created that poem
       if (poem.postedBy) {
         const whoCreatedThePoem = poem.postedBy._id.valueOf();
-        console.log(whoCreatedThePoem)
+        // console.log(whoCreatedThePoem)
 
         if (whoCreatedThePoem === userId) {
           poem.userPoemMatch = true;
@@ -42,14 +43,16 @@ async function getAllPoems(req, res) {
 
     const locals = {
       publicPoems,
-      serverMessage: req.query,
+      serverMessage: {...req.session.serverMessage},
       pageTitle: "Community",
       isAuth: req.session.isAuth,
       user: req.session.username,
       userPoemMatch
     };
     // console.log('get all poems', req.query)
+    req.session.serverMessage = {}
     res.render("poems", locals);
+
   
 }
 async function getYourWork(req, res) {
@@ -66,22 +69,27 @@ async function getYourWork(req, res) {
 
   const locals = {
     userPoems,
-    serverMessage: req.query,
+    serverMessage: {...req.session.serverMessage},
     pageTitle: "Your work",
     isAuth: req.session.isAuth,
     user: req.session.username
   };
   // console.log('get all poems', req.query)
+  req.session.serverMessage = {}
   res.render("yourWork", locals);
+
 }
+
 async function notFound(req, res) {
   const locals = {
-    serverMessage: req.query,
+    serverMessage: {...req.session.serverMessage},
     pageTitle: "Page not found",
     isAuth: req.session.isAuth,
     user: req.session.username
   };
+  req.session.serverMessage = {}
   res.render("notFound", locals);
+
 }
 
 //Get requested poem, open one specific poem to read
@@ -124,13 +132,15 @@ async function getPoem(req, res) {
           poem,
           pageTitle: "Read and edit poem",
           isAuth: req.session.isAuth,
-          serverMessage: req.query,
+          serverMessage: {...req.session.serverMessage},
           poemId,
           userPoemMatch,
           comments,
           user: req.session.username
         }
+        req.session.serverMessage = {}
         res.render("readAndEditPoem", locals)
+
       } else { //render read page if user who requests poem did not create it
         console.log('you didnt write this poem')
         userPoemMatch = false;
@@ -138,18 +148,21 @@ async function getPoem(req, res) {
           poem,
           pageTitle: "Read poem",
           isAuth: req.session.isAuth,
-          serverMessage: req.query,
+          serverMessage: {...req.session.serverMessage},
           userPoemMatch,
           poemId,
           comments,
           user: req.session.username
         }
+        req.session.serverMessage = {}
         res.render("readPoem", locals)
       }
 
   } catch (error) {
     console.log(error)
+    req.session.serverMessage = {}
     res.render('home')
+
   }
 }
 
@@ -161,13 +174,15 @@ async function getCreatePoem(req, res) {
     locals = {
       pageTitle: "Create poem",
       isAuth: req.session.isAuth,
-      serverMessage: req.query,
+      serverMessage: {...req.session.serverMessage},
       user: req.session.username
     }
   } catch (error) {
     console.log(error)
   } finally {
+    req.session.serverMessage = {}
     res.render("createpoem", locals) //render page
+
   }
 }
 
@@ -194,14 +209,18 @@ async function updatePoem(req, res) {
     });
 
 
-    q = successUrlEncode("Successfully updated poem")
-    res.redirect(`/poems/${id}/edited?${q}`);
+    // q = successUrlEncode("Successfully updated poem")
+    req.session.serverMessage = {type: "success", message: "Successfully updated poem"}
+
+    res.redirect(`/poems/${id}/edited`);
 
 
   } catch (err) {
     console.error('catch', err.message);
-    q = failUrlEncode("Could not update poem, try again")
-    res.redirect(`/poems/?${q}`);
+    // q = failUrlEncode("Could not update poem, try again")
+    req.session.serverMessage = {type: "fail", message: "Couldn't not update poem, try again"}
+
+    res.redirect(`/poems`);
   }
 }
 
@@ -226,14 +245,18 @@ async function addPoem(req, res) {
 
     poemDoc.save();
 
-    q = successUrlEncode("Successfully created poem")
-    console.log(`/poems/added?${q}`)
-    res.redirect(`/poems/added?${q}`);
+    // q = successUrlEncode("Successfully created poem")
+    req.session.serverMessage = {type: "success", message: "Successfully created poem"}
+
+    console.log(`/poems/added`)
+    res.redirect(`/poems/added`);
 
   } catch (err) {
     console.error(err.message);
-    q = failUrlEncode("Something went wrong, try again")
-    res.redirect(`/poems?${q}`);
+    // q = failUrlEncode("Something went wrong, try again")
+    req.session.serverMessage = {type: "fail", message: "Something went wrong"}
+
+    res.redirect(`/poems`);
   }
 }
 
@@ -251,19 +274,23 @@ async function deletePoem(req, res) {
       _id: id
     });
 
-    q = successUrlEncode("Successfully deleted poem!");
+    // q = successUrlEncode("Successfully deleted poem!");
+    req.session.serverMessage = {type: "success", message: "Successfully deleted poem"}
+
 
   } catch (err) {
     console.error(err.message);
-    q = failUrlEncode("Something went wrong, try again");
+    // q = failUrlEncode("Something went wrong, try again");
+    req.session.serverMessage = {type: "fail", message: "Something went wrong, try again"}
+
 
   } finally {
-    res.redirect(`/poems?${q}`);
+    res.redirect(`/poems`);
   }
 }
 
 async function commentPoem(req, res) {
-  let q;
+  // let q;
 
   try {
     const comment = req.body.comment
@@ -288,13 +315,17 @@ async function commentPoem(req, res) {
     await postRelated.save()
 
     console.log('does this happen?')
-    q = successUrlEncode("Successfully commented poem")
-    res.redirect(`${poemId}/comment?${q}`)
+    // q = successUrlEncode("Successfully commented poem")
+    req.session.serverMessage = {type: "success", message: "Successfully commented poem"}
+
+    res.redirect(`/poems/${poemId}/comment`)
 
   } catch (err) {
     console.error(err.message);
-    q = failUrlEncode("Couldn't comment, try again")
-    res.redirect(`/poems?${q}`)
+    // q = failUrlEncode("Couldn't comment, try again")
+    req.session.serverMessage = {type: "fail", message: "Couldn't comment, try again"}
+
+    res.redirect(`/poems`)
   }
 }
 
